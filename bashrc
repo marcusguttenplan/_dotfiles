@@ -23,13 +23,29 @@
 #   Daily tools
 #   ------------------------------------------------------------
 
+#math
+
+= () {
+    bc -l <<< "$@"
+}
+
+#clear terminal
+alias clear="clear && printf '\e[3J'"
+
 #easy nmap
 alias scan="sudo nmap -sV -Pn -p- -T4"
 alias portcheck="sudo lsof -i"
+alias usercheck="sudo ls * /var/db/dslocal/nodes/Default/users"
 
 # easy show invisible files
 alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
 alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
+
+# generate quick spook lorem for passwords. REQUIRES brew install lorem
+alias spook="lorem --spook --randomize"
+
+# disable gamed
+alias gamed="launchctl unload /System/Library/LaunchAgents/com.apple.gamed.plist"
 
 #   Server management
 #   ------------------------------------------------------------
@@ -38,8 +54,9 @@ alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall F
 alias changeHostname="sudo scutil --set HostName"
 
 # leet SSH
-alias farmhaus='ssh user@host'
-alias pi='ssh user@host'
+alias farmhaus='ssh marcus@impractic.al -p333'
+alias pi='ssh worker@192.168.1.80 -p333'
+alias cellardoor='ssh worker@wikiharmony.com -p333'
 
 # Get public IP from openDNS
 alias watismyip="echo 'the internet sees you RIGHT NOW as:' && dig +short myip.opendns.com @resolver1.opendns.com"
@@ -49,6 +66,22 @@ alias watismyip="echo 'the internet sees you RIGHT NOW as:' && dig +short myip.o
 
 # Remove git from a project
 alias ungit="find . -name '.git' -exec rm -rf {} \;"
+
+#   DEVELOPMENT WORKFLOW
+#   ------------------------------------------------------------
+
+# Add gulp to autocompletion
+eval "$(gulp --completion=bash)"
+
+# CD && ATOM && GULP
+
+function atomicgulp(){
+  # echo "Enter Directory: "
+	read -e -p "Enter Project Directory: " inputpath
+	# echo "Enter gulp command: "
+  # read -p "Enter gulp command: gulp + " gulpcmd
+	cd "$inputpath" && atom . && gulp
+}
 
 #   Memory checker
 #   ------------------------------------------------------------
