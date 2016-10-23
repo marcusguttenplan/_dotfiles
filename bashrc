@@ -67,6 +67,14 @@ alias watismyip="echo 'the internet sees you RIGHT NOW as:' && dig +short myip.o
 # Remove git from a project
 alias ungit="find . -name '.git' -exec rm -rf {} \;"
 
+# Add
+alias add="git add ."
+alias commit="git commit -m"
+alias push="git push origin master"
+
+# Clear cache
+alias regit="git rm -r --cached ."
+
 #   DEVELOPMENT WORKFLOW
 #   ------------------------------------------------------------
 
