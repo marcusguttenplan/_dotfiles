@@ -32,11 +32,6 @@
 #clear terminal
 alias clear="clear && printf '\e[3J'"
 
-#easy nmap
-alias scan="sudo nmap -sV -Pn -p- -T4"
-alias portcheck="sudo lsof -i"
-alias usercheck="sudo ls * /var/db/dslocal/nodes/Default/users"
-
 # easy show invisible files
 alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
 alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
@@ -52,11 +47,6 @@ alias gamed="launchctl unload /System/Library/LaunchAgents/com.apple.gamed.plist
 
 # change hostname
 alias changeHostname="sudo scutil --set HostName"
-
-# leet SSH
-alias farmhaus='ssh marcus@impractic.al -p333'
-alias pi='ssh worker@192.168.1.80 -p333'
-alias cellardoor='ssh worker@wikiharmony.com -p333'
 
 # Get public IP from openDNS
 alias watismyip="echo 'the internet sees you RIGHT NOW as:' && dig +short myip.opendns.com @resolver1.opendns.com"
@@ -350,11 +340,15 @@ alias showBlocked='sudo ipfw list'                  # showBlocked:  All ipfw rul
         echo -e "\n${RED}Current date :$NC " ; date
         echo -e "\n${RED}Machine stats :$NC " ; uptime
         echo -e "\n${RED}Current network location :$NC " ; scselect
-        echo -e "\n${RED}Public facing IP Address :$NC " ;myip
+        echo -e "\n${RED}Public facing IP Address :$NC " ;watismyip
         #echo -e "\n${RED}DNS Configuration:$NC " ; scutil --dns
         echo
     }
 
+#easy nmap
+alias scan="sudo nmap -sV -Pn -p- -T4"
+alias portcheck="sudo lsof -i"
+alias usercheck="sudo ls * /var/db/dslocal/nodes/Default/users"
 
 #   ---------------------------------------
 #   7. SYSTEMS OPERATIONS & INFORMATION
@@ -365,12 +359,6 @@ alias mountReadWrite='/sbin/mount -uw /'    # mountReadWrite:   For use when boo
 #   cleanupDS:  Recursively delete .DS_Store files
 #   -------------------------------------------------------------------
     alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
-
-#   finderShowHidden:   Show hidden files in Finder
-#   finderHideHidden:   Hide hidden files in Finder
-#   -------------------------------------------------------------------
-    alias finderShowHidden='defaults write com.apple.finder ShowAllFiles TRUE'
-    alias finderHideHidden='defaults write com.apple.finder ShowAllFiles FALSE'
 
 #   cleanupLS:  Clean up LaunchServices to remove duplicates in the "Open With" menu
 #   -----------------------------------------------------------------------------------
