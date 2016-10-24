@@ -2,32 +2,21 @@
 #
 #  WOW, I MADE A BASH PROFILE
 #
-#  Sections:
-#  0.   ULTRA
-#  1.   Environment Configuration
-#  2.   Make Terminal Better (remapping defaults and adding functionality)
-#  3.   File and Folder Management
-#  4.   Searching
-#  5.   Process Management
-#  6.   Networking
-#  7.   System Operations & Information
-#  8.   Web Development
-#  9.   Reminders & Notes
-#
 #  ---------------------------------------------------------------------------
+#
+#  Ultra
+#
+#  ----------------------------------------------------------------------------
+#  Daily tools
+#  ----------------------------------------------------------------------------
 
-#   -------------------------------
-#   0.  ULTRA (wrangler)
-#   -------------------------------
-
-#   Daily tools
-#   ------------------------------------------------------------
-
-#math
-
+# math
 = () {
     bc -l <<< "$@"
 }
+
+# show alias: to remind yourself of an alias (given some part of it)
+showa () { /usr/bin/grep --color=always -i -a1 $@ ~/Library/init/bash/aliases.bash | grep -v '^\s*$' | less -FSRXc ; }
 
 #clear terminal
 alias clear="clear && printf '\e[3J'"
@@ -36,23 +25,23 @@ alias clear="clear && printf '\e[3J'"
 alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
 alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
 
+# DNS Flush
+alias flush="sudo killall -HUP mDNSResponder"
+
 # generate quick spook lorem for passwords. REQUIRES brew install lorem
 alias spook="lorem --spook --randomize"
 
 # disable gamed
 alias gamed="launchctl unload /System/Library/LaunchAgents/com.apple.gamed.plist"
 
-#   Server management
-#   ------------------------------------------------------------
+# mute the system volume
+alias stfu="osascript -e 'set volume output muted true' && echo 'muted!'"
 
-# change hostname
-alias changeHostname="sudo scutil --set HostName"
+# clip working directory path
+alias clipPath='pwd|tr -d "\n"|pbcopy'
 
-# Get public IP from openDNS
-alias watismyip="echo 'the internet sees you RIGHT NOW as:' && dig +short myip.opendns.com @resolver1.opendns.com"
-
-#   Ungit
-#   ------------------------------------------------------------
+# Git
+# ----------------------------------------------------------------------------
 
 # Remove git from a project
 alias ungit="find . -name '.git' -exec rm -rf {} \;"
@@ -65,14 +54,13 @@ alias push="git push origin master"
 # Clear cache
 alias regit="git rm -r --cached ."
 
-#   DEVELOPMENT WORKFLOW
-#   ------------------------------------------------------------
+# Dev
+# ----------------------------------------------------------------------------
 
 # Add gulp to autocompletion
 eval "$(gulp --completion=bash)"
 
 # CD && ATOM && GULP
-
 function atomicgulp(){
   # echo "Enter Directory: "
 	read -e -p "Enter Project Directory: " inputpath
@@ -81,83 +69,76 @@ function atomicgulp(){
 	cd "$inputpath" && atom . && gulp
 }
 
-#   Memory checker
-#   ------------------------------------------------------------
+# httpDebug:  Download a web page and show info on what took time
+httpDebug () { /usr/bin/curl $@ -o /dev/null -w "dns: %{time_namelookup} connect: %{time_connect} pretransfer: %{time_pretransfer} starttransfer: %{time_starttransfer} total: %{time_total}\n" ; }
 
-# Top
-alias topcpu='top -o cpu'
-alias topmem='top -o rsize' # memory
-alias topten="top -R -F -s 10 -o rsize"
-
-#clipboard
-alias clipPath='pwd|tr -d "\n"|pbcopy'
-
-# DNS Flush
-alias flush="sudo killall -HUP mDNSResponder"
-
-# mute the system volume
-alias stfu="osascript -e 'set volume output muted true' && echo 'muted!'"
-
-#   cdf:  'Cd's to frontmost window of MacOS Finder
-#   ------------------------------------------------------
-    cdf () {
-        currFolderPath=$( /usr/bin/osascript <<EOT
-            tell application "Finder"
-                try
-            set currFolder to (folder of the front window as alias)
-                on error
-            set currFolder to (path to desktop folder as alias)
-                end try
-                POSIX path of currFolder
-            end tell
-EOT
-        )
-        echo "cd to \"$currFolderPath\""
-        cd "$currFolderPath"
-    }
+#httpTools
+alias editHosts='sudo edit /etc/hosts'                  # editHosts:        Edit /etc/hosts file
+alias herr='tail /var/log/httpd/error_log'              # herr:             Tails HTTP error logs
+httpHeaders () { /usr/bin/curl -I -L $@ ; }             # httpHeaders:      Grabs headers from web page
 
 
-#   extract:  Extract most know archives with one command
-#   ---------------------------------------------------------
-    extract () {
-        if [ -f $1 ] ; then
-          case $1 in
-            *.tar.bz2)   tar xjf $1     ;;
-            *.tar.gz)    tar xzf $1     ;;
-            *.bz2)       bunzip2 $1     ;;
-            *.rar)       unrar e $1     ;;
-            *.gz)        gunzip $1      ;;
-            *.tar)       tar xf $1      ;;
-            *.tbz2)      tar xjf $1     ;;
-            *.tgz)       tar xzf $1     ;;
-            *.zip)       unzip $1       ;;
-            *.Z)         uncompress $1  ;;
-            *.7z)        7z x $1        ;;
-            *)     echo "'$1' cannot be extracted via extract()" ;;
-             esac
-         else
-             echo "'$1' is not a valid file"
-         fi
-    }
+#  ----------------------------------------------------------------------------
+#
+#  Elite
+#
+#  ----------------------------------------------------------------------------
+
+# change hostname
+alias changeHostname="sudo scutil --set HostName"
+
+# Get public IP from openDNS
+alias watismyip="echo 'the internet sees you RIGHT NOW as:' && dig +short myip.opendns.com @resolver1.opendns.com"
+
+#easy nmap
+alias scan="sudo nmap -sV -Pn -p- -T4"
+alias portcheck="sudo lsof -i"
+alias usercheck="sudo ls * /var/db/dslocal/nodes/Default/users"
+
+# networking tools
+alias flushDNS='dscacheutil -flushcache'            # flushDNS:     Flush out the DNS Cache
+alias lsock='sudo /usr/sbin/lsof -i -P'             # lsock:        Display open sockets
+alias lsockU='sudo /usr/sbin/lsof -nP | grep UDP'   # lsockU:       Display only open UDP sockets
+alias lsockT='sudo /usr/sbin/lsof -nP | grep TCP'   # lsockT:       Display only open TCP sockets
+alias ipInfo0='ipconfig getpacket en0'              # ipInfo0:      Get info on connections for en0
+alias ipInfo1='ipconfig getpacket en1'              # ipInfo1:      Get info on connections for en1
+alias openPorts='sudo lsof -i | grep LISTEN'        # openPorts:    All listening connections
+alias showBlocked='sudo ipfw list'                  # showBlocked:  All ipfw rules inc/ blocked IPs
+
+#   ii:  display useful host related informaton
+ii() {
+    echo -e "\nYou are logged on ${RED}$HOST"
+    echo -e "\nAdditionnal information:$NC " ; uname -a
+    echo -e "\n${RED}Users logged on:$NC " ; w -h
+    echo -e "\n${RED}Current date :$NC " ; date
+    echo -e "\n${RED}Machine stats :$NC " ; uptime
+    echo -e "\n${RED}Current network location :$NC " ; scselect
+    echo -e "\n${RED}Public facing IP Address :$NC " ;watismyip
+    #echo -e "\n${RED}DNS Configuration:$NC " ; scutil --dns
+    echo
+}
 
 
-#   -------------------------------
-#   1.  ENVIRONMENT CONFIGURATION
-#   -------------------------------
+
+# ----------------------------------------------------------------------------
+#
+# Environmentals
+#
+# ----------------------------------------------------------------------------
 
 #   Change Prompt
 #   ------------------------------------------------------------
-    export PS1="________________________________________________________________________________\n| \w @ \h (\u) \n| => "
-    export PS2="| => "
+export PS1="________________________________________________________________________________\n| \w @ \h (\u) \n| => "
+export PS2="| => "
 
 #   Set Default Editor (change 'Nano' to the editor of your choice)
 #   ------------------------------------------------------------
-    export EDITOR=/usr/bin/nano
+export EDITOR=/usr/bin/nano
 
 #   Set default blocksize for ls, df, du
 #   from this: http://hints.macworld.com/comment.php?mode=view&cid=24491
 #   ------------------------------------------------------------
-    export BLOCKSIZE=1k
+export BLOCKSIZE=1k
 
 #   Add color to terminal
 #   (this is all commented out as I use Mac Terminal Profiles)
@@ -205,79 +186,65 @@ alias lr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\
 #   mans:   Search manpage given in agument '1' for term given in argument '2' (case insensitive)
 #           displays paginated result with colored search terms and two lines surrounding each hit.             Example: mans mplayer codec
 #   --------------------------------------------------------------------
-    mans () {
-        man $1 | grep -iC2 --color=always $2 | less
-    }
-
-#   showa: to remind yourself of an alias (given some part of it)
-#   ------------------------------------------------------------
-    showa () { /usr/bin/grep --color=always -i -a1 $@ ~/Library/init/bash/aliases.bash | grep -v '^\s*$' | less -FSRXc ; }
-
-
-#   -------------------------------
-#   3.  FILE AND FOLDER MANAGEMENT
-#   -------------------------------
-
-zipf () { zip -r "$1".zip "$1" ; }          # zipf:         To create a ZIP archive of a folder
-alias numFiles='echo $(ls -1 | wc -l)'      # numFiles:     Count of non-hidden files in current dir
-alias make1mb='mkfile 1m ./1MB.dat'         # make1mb:      Creates a file of 1mb size (all zeros)
-alias make5mb='mkfile 5m ./5MB.dat'         # make5mb:      Creates a file of 5mb size (all zeros)
-alias make10mb='mkfile 10m ./10MB.dat'      # make10mb:     Creates a file of 10mb size (all zeros)
+mans () {
+    man $1 | grep -iC2 --color=always $2 | less
+}
 
 #   cdf:  'Cd's to frontmost window of MacOS Finder
-#   ------------------------------------------------------
-    cdf () {
-        currFolderPath=$( /usr/bin/osascript <<EOT
-            tell application "Finder"
-                try
-            set currFolder to (folder of the front window as alias)
-                on error
-            set currFolder to (path to desktop folder as alias)
-                end try
-                POSIX path of currFolder
-            end tell
+cdf () {
+    currFolderPath=$( /usr/bin/osascript <<EOT
+        tell application "Finder"
+            try
+        set currFolder to (folder of the front window as alias)
+            on error
+        set currFolder to (path to desktop folder as alias)
+            end try
+            POSIX path of currFolder
+        end tell
 EOT
-        )
-        echo "cd to \"$currFolderPath\""
-        cd "$currFolderPath"
-    }
+    )
+    echo "cd to \"$currFolderPath\""
+    cd "$currFolderPath"
+}
 
 #   extract:  Extract most know archives with one command
-#   ---------------------------------------------------------
-    extract () {
-        if [ -f $1 ] ; then
-          case $1 in
-            *.tar.bz2)   tar xjf $1     ;;
-            *.tar.gz)    tar xzf $1     ;;
-            *.bz2)       bunzip2 $1     ;;
-            *.rar)       unrar e $1     ;;
-            *.gz)        gunzip $1      ;;
-            *.tar)       tar xf $1      ;;
-            *.tbz2)      tar xjf $1     ;;
-            *.tgz)       tar xzf $1     ;;
-            *.zip)       unzip $1       ;;
-            *.Z)         uncompress $1  ;;
-            *.7z)        7z x $1        ;;
-            *)     echo "'$1' cannot be extracted via extract()" ;;
-             esac
-         else
-             echo "'$1' is not a valid file"
-         fi
-    }
+extract () {
+    if [ -f $1 ] ; then
+      case $1 in
+        *.tar.bz2)   tar xjf $1     ;;
+        *.tar.gz)    tar xzf $1     ;;
+        *.bz2)       bunzip2 $1     ;;
+        *.rar)       unrar e $1     ;;
+        *.gz)        gunzip $1      ;;
+        *.tar)       tar xf $1      ;;
+        *.tbz2)      tar xjf $1     ;;
+        *.tgz)       tar xzf $1     ;;
+        *.zip)       unzip $1       ;;
+        *.Z)         uncompress $1  ;;
+        *.7z)        7z x $1        ;;
+        *)     echo "'$1' cannot be extracted via extract()" ;;
+         esac
+     else
+         echo "'$1' is not a valid file"
+     fi
+}
+
+
+
 
 
 #   ---------------------------
 #   4.  SEARCHING
 #   ---------------------------
 
-alias quickfind="find . -name "                 # qfind:    Quickly search for file
+alias quickfind="find . -iname "                 # qfind:    Quickly search for file
 ff () { /usr/bin/find . -name "$@" ; }      # ff:       Find file under the current directory
 ffs () { /usr/bin/find . -name "$@"'*' ; }  # ffs:      Find file whose name starts with a given string
 ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name ends with a given string
 
 #   spotlight: Search for a file using MacOS Spotlight's metadata
 #   -----------------------------------------------------------
-    spotlight () { mdfind "kMDItemDisplayName == '$@'wc"; }
+spotlight () { mdfind "kMDItemDisplayName == '$@'wc"; }
 
 #   ---------------------------
 #   5. PROCESS MANAGEMENT
@@ -289,93 +256,47 @@ ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name end
 #       E.g. findPid '/d$/' finds pids of all processes with names ending in 'd'
 #       Without the 'sudo' it will only find processes of the current user
 #   -----------------------------------------------------
-    findPid () { lsof -t -c "$@" ; }
+findPid () { lsof -t -c "$@" ; }
 
 #   memHogsTop, memHogsPs:  Find memory hogs
 #   -----------------------------------------------------
-    alias memHogsTop='top -l 1 -o rsize | head -20'
-    alias memHogsPs='ps wwaxm -o pid,stat,vsize,rss,time,command | head -10'
+alias memHogsTop='top -l 1 -o rsize | head -20'
+alias memHogsPs='ps wwaxm -o pid,stat,vsize,rss,time,command | head -10'
 
 #   cpuHogs:  Find CPU hogs
 #   -----------------------------------------------------
-    alias cpu_hogs='ps wwaxr -o pid,stat,%cpu,time,command | head -10'
+alias cpu_hogs='ps wwaxr -o pid,stat,%cpu,time,command | head -10'
 
 #   topForever:  Continual 'top' listing (every 10 seconds)
 #   -----------------------------------------------------
-    alias topForever='top -l 9999999 -s 10 -o cpu'
+alias topForever='top -l 9999999 -s 10 -o cpu'
 
 #   ttop:  Recommended 'top' invocation to minimize resources
 #   ------------------------------------------------------------
 #       Taken from this macosxhints article
 #       http://www.macosxhints.com/article.php?story=20060816123853639
 #   ------------------------------------------------------------
-    alias ttop="top -R -F -s 10 -o rsize"
+alias ttop="top -R -F -s 10 -o rsize"
 
 #   my_ps: List processes owned by my user:
 #   ------------------------------------------------------------
-    my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command ; }
+my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command ; }
 
+#   Memory checker
+# Top
+alias topcpu='top -o cpu'
+alias topmem='top -o rsize' # memory
+alias topten="top -R -F -s 10 -o rsize"
 
-#   ---------------------------
-#   6. NETWORKING
-#   ---------------------------
-
-alias myip='curl ip.appspot.com'                    # myip:         Public facing IP Address
-alias netCons='lsof -i'                             # netCons:      Show all open TCP/IP sockets
-alias flushDNS='dscacheutil -flushcache'            # flushDNS:     Flush out the DNS Cache
-alias lsock='sudo /usr/sbin/lsof -i -P'             # lsock:        Display open sockets
-alias lsockU='sudo /usr/sbin/lsof -nP | grep UDP'   # lsockU:       Display only open UDP sockets
-alias lsockT='sudo /usr/sbin/lsof -nP | grep TCP'   # lsockT:       Display only open TCP sockets
-alias ipInfo0='ipconfig getpacket en0'              # ipInfo0:      Get info on connections for en0
-alias ipInfo1='ipconfig getpacket en1'              # ipInfo1:      Get info on connections for en1
-alias openPorts='sudo lsof -i | grep LISTEN'        # openPorts:    All listening connections
-alias showBlocked='sudo ipfw list'                  # showBlocked:  All ipfw rules inc/ blocked IPs
-
-#   ii:  display useful host related informaton
-#   -------------------------------------------------------------------
-    ii() {
-        echo -e "\nYou are logged on ${RED}$HOST"
-        echo -e "\nAdditionnal information:$NC " ; uname -a
-        echo -e "\n${RED}Users logged on:$NC " ; w -h
-        echo -e "\n${RED}Current date :$NC " ; date
-        echo -e "\n${RED}Machine stats :$NC " ; uptime
-        echo -e "\n${RED}Current network location :$NC " ; scselect
-        echo -e "\n${RED}Public facing IP Address :$NC " ;watismyip
-        #echo -e "\n${RED}DNS Configuration:$NC " ; scutil --dns
-        echo
-    }
-
-#easy nmap
-alias scan="sudo nmap -sV -Pn -p- -T4"
-alias portcheck="sudo lsof -i"
-alias usercheck="sudo ls * /var/db/dslocal/nodes/Default/users"
-
-#   ---------------------------------------
-#   7. SYSTEMS OPERATIONS & INFORMATION
-#   ---------------------------------------
-
-alias mountReadWrite='/sbin/mount -uw /'    # mountReadWrite:   For use when booted into single-user
 
 #   cleanupDS:  Recursively delete .DS_Store files
 #   -------------------------------------------------------------------
-    alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
+alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
 
 #   cleanupLS:  Clean up LaunchServices to remove duplicates in the "Open With" menu
 #   -----------------------------------------------------------------------------------
-    alias cleanupLS="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
+alias cleanupLS="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
 
 #    screensaverDesktop: Run a screensaver on the Desktop
 #   -----------------------------------------------------------------------------------
-    alias screensaverDesktop='/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine -background'
-
-#   ---------------------------------------
-#   8. WEB DEVELOPMENT
-#   ---------------------------------------
-
-alias editHosts='sudo edit /etc/hosts'                  # editHosts:        Edit /etc/hosts file
-alias herr='tail /var/log/httpd/error_log'              # herr:             Tails HTTP error logs
-httpHeaders () { /usr/bin/curl -I -L $@ ; }             # httpHeaders:      Grabs headers from web page
-
-#   httpDebug:  Download a web page and show info on what took time
-#   -------------------------------------------------------------------
-    httpDebug () { /usr/bin/curl $@ -o /dev/null -w "dns: %{time_namelookup} connect: %{time_connect} pretransfer: %{time_pretransfer} starttransfer: %{time_starttransfer} total: %{time_total}\n" ; }
+alias screensaverDesktop='/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine -background'
