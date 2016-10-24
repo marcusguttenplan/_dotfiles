@@ -50,6 +50,7 @@ alias ungit="find . -name '.git' -exec rm -rf {} \;"
 alias add="git add ."
 alias commit="git commit -m"
 alias push="git push origin master"
+alias pull="git pull"
 
 # Clear cache
 alias regit="git rm -r --cached ."
