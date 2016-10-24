@@ -93,7 +93,8 @@ alias watismyip="echo 'the internet sees you RIGHT NOW as:' && dig +short myip.o
 #easy nmap
 alias scan="sudo nmap -sV -Pn -p- -T4"
 alias portcheck="sudo lsof -i"
-alias usercheck="sudo ls * /var/db/dslocal/nodes/Default/users"
+alias kextcheck="sudo ls -al /var/db/dslocal/nodes/Default/users && kextstat -l | grep -v com.apple"
+alias usercheck="dscl . list /Users"
 
 # networking tools
 alias flushDNS='dscacheutil -flushcache'            # flushDNS:     Flush out the DNS Cache
