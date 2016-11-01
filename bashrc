@@ -96,6 +96,7 @@ alias scan="sudo nmap -sV -Pn -p- -T4"
 alias portcheck="sudo lsof -i"
 alias kextcheck="sudo ls -al /var/db/dslocal/nodes/Default/users && kextstat -l | grep -v com.apple"
 alias usercheck="dscl . list /Users"
+alias userinfo="dscacheutil -q user"
 
 # networking tools
 alias flushDNS='dscacheutil -flushcache'            # flushDNS:     Flush out the DNS Cache
