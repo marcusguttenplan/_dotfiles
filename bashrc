@@ -59,16 +59,16 @@ alias regit="git rm -r --cached ."
 # ----------------------------------------------------------------------------
 
 # Add gulp to autocompletion
-eval "$(gulp --completion=bash)"
+#eval "$(gulp --completion=bash)"
 
 # CD && ATOM && GULP
-function atomicgulp(){
-  # echo "Enter Directory: "
-	read -e -p "Enter Project Directory: " inputpath
-	# echo "Enter gulp command: "
-  # read -p "Enter gulp command: gulp + " gulpcmd
-	cd "$inputpath" && atom . && gulp
-}
+#function atomicgulp(){
+#  # echo "Enter Directory: "
+#	read -e -p "Enter Project Directory: " inputpath
+#	# echo "Enter gulp command: "
+#  # read -p "Enter gulp command: gulp + " gulpcmd
+#	cd "$inputpath" && atom . && gulp
+#}
 
 # httpDebug:  Download a web page and show info on what took time
 httpDebug () { /usr/bin/curl $@ -o /dev/null -w "dns: %{time_namelookup} connect: %{time_connect} pretransfer: %{time_pretransfer} starttransfer: %{time_starttransfer} total: %{time_total}\n" ; }
