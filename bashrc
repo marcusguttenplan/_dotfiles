@@ -70,6 +70,13 @@ alias regit="git rm -r --cached ."
 #	cd "$inputpath" && atom . && gulp
 #}
 
+# generate a self-signed ssl cert
+function sslkeygen(){
+	read -e -p "Enter Name of Cert to Generate: " certname
+	echo "Generating '$certname'"
+	openssl req -x509 -sha256 -newkey rsa:2048 -keyout $certname.key -out $certname.crt -days 1024 -nodes
+}
+
 # httpDebug:  Download a web page and show info on what took time
 httpDebug () { /usr/bin/curl $@ -o /dev/null -w "dns: %{time_namelookup} connect: %{time_connect} pretransfer: %{time_pretransfer} starttransfer: %{time_starttransfer} total: %{time_total}\n" ; }
 
