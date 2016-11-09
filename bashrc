@@ -70,6 +70,9 @@ alias regit="git rm -r --cached ."
 #	cd "$inputpath" && atom . && gulp
 #}
 
+# scrub exif data from an image
+alias scrub="exiftool -all="
+
 # generate a self-signed ssl cert
 function sslkeygen(){
 	read -e -p "Enter Name of Cert to Generate: " certname
