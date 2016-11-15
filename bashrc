@@ -74,7 +74,7 @@ alias regit="git rm -r --cached ."
 alias scrub="exiftool -all="
 
 # generate a self-signed ssl cert
-function sslkeygen(){
+sslkeygen(){
 	read -e -p "Enter Name of Cert to Generate: " certname
 	echo "Generating '$certname'"
 	openssl req -x509 -sha256 -newkey rsa:2048 -keyout $certname.key -out $certname.crt -days 1024 -nodes
@@ -88,6 +88,13 @@ alias editHosts='sudo edit /etc/hosts'                  # editHosts:        Edit
 alias herr='tail /var/log/httpd/error_log'              # herr:             Tails HTTP error logs
 httpHeaders () { /usr/bin/curl -I -L $@ ; }             # httpHeaders:      Grabs headers from web page
 
+#find all html files in directory
+htmlhunter () {
+        find . -iname '*.html' | while read line; do
+                echo "Finding HTML and opening $line"
+#               open "$line"
+        done
+}
 
 #  ----------------------------------------------------------------------------
 #
