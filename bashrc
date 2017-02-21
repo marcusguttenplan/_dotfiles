@@ -41,7 +41,6 @@ alias stfu="osascript -e 'set volume output muted true' && echo 'muted!'"
 alias clipPath='pwd|tr -d "\n"|pbcopy'
 
 # easy quit app
-
 function quitter(){
  # echo "Enter App Name: "
 	read -e -p "Enter Application Name: " inputpath
