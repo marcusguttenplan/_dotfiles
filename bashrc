@@ -40,6 +40,16 @@ alias stfu="osascript -e 'set volume output muted true' && echo 'muted!'"
 # clip working directory path
 alias clipPath='pwd|tr -d "\n"|pbcopy'
 
+# easy quit app
+
+function quitter(){
+ # echo "Enter App Name: "
+	read -e -p "Enter Application Name: " inputpath
+	osascript -e 'quit app "$inputpath"'
+}
+
+
+
 # Git
 # ----------------------------------------------------------------------------
 
@@ -81,7 +91,7 @@ sslkeygen(){
 }
 
 # httpDebug:  Download a web page and show info on what took time
-httpDebug () { /usr/bin/curl $@ -o /dev/null -w "dns: %{time_namelookup} connect: %{time_connect} pretransfer: %{time_pretransfer} starttransfer: %{time_starttransfer} total: %{time_total}\n" ; }
+speedtest () { /usr/bin/curl $@ -o /dev/null -w "dns: %{time_namelookup} connect: %{time_connect} pretransfer: %{time_pretransfer} starttransfer: %{time_starttransfer} total: %{time_total}\n" ; }
 
 #httpTools
 alias editHosts='sudo edit /etc/hosts'                  # editHosts:        Edit /etc/hosts file
