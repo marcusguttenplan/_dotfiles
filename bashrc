@@ -44,7 +44,7 @@ alias clipPath='pwd|tr -d "\n"|pbcopy'
 function quitter(){
  # echo "Enter App Name: "
 	read -e -p "Enter Application Name: " inputpath
-	osascript -e 'quit app "$inputpath"'
+	osascript -e 'quit app "'$inputpath'"'
 }
 
 
