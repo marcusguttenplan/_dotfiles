@@ -335,6 +335,17 @@ alias topcpu='top -o cpu'
 alias topmem='top -o rsize' # memory
 alias topten="top -R -F -s 10 -o rsize"
 
+# List Hardware Interfaces
+alias hwcheck='networksetup -listallhardwareports'
+
+# Remaining Battery Time
+alas battTime="pmset -g batt | egrep "([0-9]+\%).*" -o --colour=auto | cut -f3 -d';'"
+
+# Remaining Battery Percent
+alias battPercentage="pmset -g batt | egrep "([0-9]+\%).*" -o --colour=auto | cut -f1 -d';'"
+
+
+
 
 #   cleanupDS:  Recursively delete .DS_Store files
 #   -------------------------------------------------------------------
