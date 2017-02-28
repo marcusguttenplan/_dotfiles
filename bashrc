@@ -127,7 +127,9 @@ alias changeHostname="sudo scutil --set HostName"
 
 # show and scramble mac addresses
 maclist() {
-    for x in `ifconfig | expand | cut -c1-8 | sort | uniq -u | awk -F: '{print $1;}' | grep -Fvx -e lo0 -e bridge0 -e awdl0`; do macchanger -s $x; done
+    YEL='\033[01;33m'
+    NC='\033[00m' # No Color
+    for x in `ifconfig | expand | cut -c1-8 | sort | uniq -u | awk -F: '{print $1;}' | grep -Fvx -e lo0 -e bridge0`; do echo -ne "${YEL}$x:${NC}" &&  macchanger -s $x; done
 }
 macscram(){
     for x in `ifconfig | expand | cut -c1-8 | sort | uniq -u | awk -F: '{print $1;}' | grep -Fvx -e lo0 -e bridge0 -e awdl0`; do macchanger -r $x; done
@@ -147,9 +149,6 @@ alias userinfo="dscacheutil -q user"
 
 # Get public IP from openDNS
 alias watismyip="echo 'the internet sees you RIGHT NOW as:' && dig +short myip.opendns.com @resolver1.opendns.com"
-
-
-
 
 # networking tools
 alias flushDNS='dscacheutil -flushcache'            # flushDNS:     Flush out the DNS Cache
