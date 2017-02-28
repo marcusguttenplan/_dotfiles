@@ -55,14 +55,25 @@ function quitter(){
 # Remove git from a project
 alias ungit="find . -name '.git' -exec rm -rf {} \;"
 
+# Clear cache
+alias regit="git rm -r --cached ."
+
 # Add
 alias add="git add ."
 alias commit="git commit -m"
 alias push="git push origin master"
 alias pull="git pull"
 
-# Clear cache
-alias regit="git rm -r --cached ."
+# Fetch and Force Overwrite
+alias gitforcefetch="git fetch --all && git reset --hard origin/master"
+
+# Set new remote origin
+alias gitremote="git remote add origin"
+
+# Add submodules
+alias gitsub="git submodule add"
+alias gitsubup="git submodule update --recursive --remote"
+
 
 # Dev
 # ----------------------------------------------------------------------------
