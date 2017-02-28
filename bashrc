@@ -356,8 +356,6 @@ alias hwcheck='networksetup -listallhardwareports'
 #alias battPercentage="pmset -g batt | egrep "([0-9]+\%).*" -o --colour=auto | cut -f1 -d';'"
 
 
-
-
 #   cleanupDS:  Recursively delete .DS_Store files
 #   -------------------------------------------------------------------
 alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
