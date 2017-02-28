@@ -129,7 +129,7 @@ alias changeHostname="sudo scutil --set HostName"
 maclist() {
     YEL='\033[01;33m'
     NC='\033[00m' # No Color
-    for x in `ifconfig | expand | cut -c1-8 | sort | uniq -u | awk -F: '{print $1;}' | grep -Fvx -e lo0 -e bridge0`; do echo -ne "${YEL}$x:${NC}" &&  macchanger -s $x; done
+    for x in `ifconfig | expand | cut -c1-8 | sort | uniq -u | awk -F: '{print $1;}'`; do echo -ne "${YEL}$x:${NC}" &&  macchanger -s $x; done
 }
 macscram(){
     for x in `ifconfig | expand | cut -c1-8 | sort | uniq -u | awk -F: '{print $1;}' | grep -Fvx -e lo0 -e bridge0 -e awdl0`; do macchanger -r $x; done
