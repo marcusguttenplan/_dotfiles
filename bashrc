@@ -140,6 +140,11 @@ alias ethscram="macchanger -r eth0"
 # scrub exif data from an image
 alias scrub="exiftool -all="
 
+# IP list
+iplist(){
+    for x in `ifconfig | awk '$1 == "inet" {print $2}'`; do echo -e "${YEL}$x:${NC}"; done
+}
+
 #easy nmap
 alias scan="sudo nmap -sV -Pn -p- -T4"
 alias portcheck="sudo lsof -i"
