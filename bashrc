@@ -90,8 +90,6 @@ alias gitsubup="git submodule update --recursive --remote"
 #	cd "$inputpath" && atom . && gulp
 #}
 
-# scrub exif data from an image
-alias scrub="exiftool -all="
 
 # generate a self-signed ssl cert
 sslkeygen(){
@@ -100,8 +98,10 @@ sslkeygen(){
 	openssl req -x509 -sha256 -newkey rsa:2048 -keyout $certname.key -out $certname.crt -days 1024 -nodes
 }
 
+
+
 # httpDebug:  Download a web page and show info on what took time
-speedtest () { /usr/bin/curl $@ -o /dev/null -w "dns: %{time_namelookup} connect: %{time_connect} pretransfer: %{time_pretransfer} starttransfer: %{time_starttransfer} total: %{time_total}\n" ; }
+httpDebug () { /usr/bin/curl $@ -o /dev/null -w "dns: %{time_namelookup} connect: %{time_connect} pretransfer: %{time_pretransfer} starttransfer: %{time_starttransfer} total: %{time_total}\n" ; }
 
 #httpTools
 alias editHosts='sudo edit /etc/hosts'                  # editHosts:        Edit /etc/hosts file
@@ -125,8 +125,18 @@ htmlhunter () {
 # change hostname
 alias changeHostname="sudo scutil --set HostName"
 
-# Get public IP from openDNS
-alias watismyip="echo 'the internet sees you RIGHT NOW as:' && dig +short myip.opendns.com @resolver1.opendns.com"
+# show and scramble mac addresses
+maclist() {
+    for x in `ifconfig | expand | cut -c1-8 | sort | uniq -u | awk -F: '{print $1;}' | grep -Fvx -e lo0 -e bridge0 -e awdl0`; do macchanger -s $x; done
+}
+macscram(){
+    for x in `ifconfig | expand | cut -c1-8 | sort | uniq -u | awk -F: '{print $1;}' | grep -Fvx -e lo0 -e bridge0 -e awdl0`; do macchanger -r $x; done
+}
+alias wifiscram="macchanger -r en0"
+alias ethscram="macchanger -r eth0"
+
+# scrub exif data from an image
+alias scrub="exiftool -all="
 
 #easy nmap
 alias scan="sudo nmap -sV -Pn -p- -T4"
@@ -134,6 +144,12 @@ alias portcheck="sudo lsof -i"
 alias kextcheck="sudo ls -al /var/db/dslocal/nodes/Default/users && kextstat -l | grep -v com.apple"
 alias usercheck="dscl . list /Users"
 alias userinfo="dscacheutil -q user"
+
+# Get public IP from openDNS
+alias watismyip="echo 'the internet sees you RIGHT NOW as:' && dig +short myip.opendns.com @resolver1.opendns.com"
+
+
+
 
 # networking tools
 alias flushDNS='dscacheutil -flushcache'            # flushDNS:     Flush out the DNS Cache
