@@ -3,12 +3,8 @@
 #  WOW, I MADE A BASH PROFILE
 #
 #  ---------------------------------------------------------------------------
-#
-#  Ultra
-#
-#  ----------------------------------------------------------------------------
-#  Daily tools
-#  ----------------------------------------------------------------------------
+
+
 
 # global color vars to make it easy to prettify
 RED='\033[01;31m'
@@ -34,13 +30,6 @@ alias stfu="osascript -e 'set volume output muted true' && echo 'muted!'"
 
 # clip working directory path
 alias clipPath='pwd|tr -d "\n"|pbcopy'
-
-# easy quit app
-function quitter(){
- # echo "Enter App Name: "
-	read -e -p "Enter Application Name: " inputpath
-	osascript -e 'quit app "'$inputpath'"'
-}
 
 
 
@@ -135,6 +124,21 @@ alias fwinfo="sudo pfctl -s info"
 processcheck() {
     ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command
 }
+#   findPid: find out the pid of a specified process
+findprocess () { lsof -t -c "$@" ; }
+#   memHogsTop, memHogsPs:  Find memory hogs
+alias memHogsTop='top -l 1 -o rsize | head -20'
+alias memHogsPs='ps wwaxm -o pid,stat,vsize,rss,time,command | head -10'
+#   cpuHogs:  Find CPU hogs
+alias cpu_hogs='ps wwaxr -o pid,stat,%cpu,time,command | head -10'
+#   topForever:  Continual 'top' listing (every 10 seconds)
+alias topForever='top -l 9999999 -s 10 -o cpu'
+#   ttop:  Recommended 'top' invocation to minimize resources
+alias ttop="top -R -F -s 10 -o rsize"
+#   Memory checker
+alias topcpu='top -o cpu'
+alias topmem='top -o rsize' # memory
+alias topten="top -R -F -s 10 -o rsize"
 
 # Get public IP from openDNS
 alias watismyip="echo 'the internet sees you RIGHT NOW as:' && dig +short myip.opendns.com @resolver1.opendns.com"
@@ -155,6 +159,7 @@ ii() {
     #echo -e "\n${RED}DNS Configuration:$NC " ; scutil --dns
     echo
 }
+
 
 
 
@@ -209,12 +214,8 @@ htmlhunter () {
 # ----------------------------------------------------------------------------
 
 #   Change Prompt
-#   ------------------------------------------------------------
 #export PS1="________________________________________________________________________________\n| \w @ \h (\u) \n| => "
 #export PS2="| => "
-
-#   Change Prompt Color for Various Servers (the tmux effect)
-#   ------------------------------------------------------------
 
 # R/G
 export PS1="${GREEN}________________________________________________________________________________\n| \w ${RED}@\h${NC}${GREEN} (\u) \n| => ${NC}"
@@ -241,24 +242,20 @@ export PS2="${GREEN}| => ${NC}"
 #export PS2="${GREEN}| => ${NC}"
 
 #   Set Default Editor (change 'Nano' to the editor of your choice)
-#   ------------------------------------------------------------
 export EDITOR=/usr/bin/nano
 
 #   Set default blocksize for ls, df, du
-#   from this: http://hints.macworld.com/comment.php?mode=view&cid=24491
-#   ------------------------------------------------------------
 export BLOCKSIZE=1k
 
 #   Add color to terminal
-#   (this is all commented out as I use Mac Terminal Profiles)
-#   from http://osxdaily.com/2012/02/21/add-color-to-the-terminal-in-mac-os-x/
-#   ------------------------------------------------------------
 #   export CLICOLOR=1
 #   export LSCOLORS=ExFxBxDxCxegedabagacad
 
-#   -----------------------------
-#   2.  MAKE TERMINAL BETTER
-#   -----------------------------
+
+
+
+#   MAKE TERMINAL BETTER
+#   -------------------------------------------------------------------
 
 alias cp='cp -iv'                           # Preferred 'cp' implementation
 alias mv='mv -iv'                           # Preferred 'mv' implementation
@@ -288,12 +285,10 @@ ql () { qlmanage -p "$*" >& /dev/null; }    # ql:           Opens any file in Ma
 alias DT='tee ~/Desktop/terminalOut.txt'    # DT:           Pipe content to file on MacOS Desktop
 
 #   lr:  Full Recursive Directory Listing
-#   ------------------------------------------
 alias lr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\'' -e '\''s/^/   /'\'' -e '\''s/-/|/'\'' | less'
 
-#   mans:   Search manpage given in agument '1' for term given in argument '2' (case insensitive)
-#           displays paginated result with colored search terms and two lines surrounding each hit.             Example: mans mplayer codec
-#   --------------------------------------------------------------------
+#   Search manpage given in agument '1' for term given in argument '2' (case insensitive)
+#   Example: mans mplayer codec
 mans () {
     man $1 | grep -iC2 --color=always $2 | less
 }
@@ -318,10 +313,6 @@ EOT
 #clear terminal
 alias clear="clear && printf '\e[3J'"
 
-# easy show invisible files
-alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
-alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
-
 #   extract:  Extract most know archives with one command
 extract () {
     if [ -f $1 ] ; then
@@ -344,66 +335,49 @@ extract () {
      fi
 }
 
-#   ---------------------------
-#   4.  SEARCHING
-#   ---------------------------
+
+
+
+#   SEARCHING
+#   -------------------------------------------------------------------
 
 alias quickfind="find . -iname "                 # qfind:    Quickly search for file
 ff () { /usr/bin/find . -name "$@" ; }      # ff:       Find file under the current directory
 ffs () { /usr/bin/find . -name "$@"'*' ; }  # ffs:      Find file whose name starts with a given string
 ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name ends with a given string
 
+
+
+#   OSX SPECIFICS
+#   -------------------------------------------------------------------
+
+# List Hardware Interfaces
+alias hwcheck='networksetup -listallhardwareports'
+
+# Remaining Battery Time (OS X)
+# alias battTime="pmset -g batt | egrep "([0-9]+\%).*" -o --colour=auto | cut -f3 -d';'"
+
+# Remaining Battery Percent (OS X)
+# alias battPercentage="pmset -g batt | egrep "([0-9]+\%).*" -o --colour=auto | cut -f1 -d';'"
+
 #   spotlight: Search for a file using MacOS Spotlight's metadata
-#   -----------------------------------------------------------
 spotlight () { mdfind "kMDItemDisplayName == '$@'wc"; }
 
-#   ---------------------------
-#   5. PROCESS MANAGEMENT
-#   ---------------------------
+# easy quit app
+function quitter(){
+ # echo "Enter App Name: "
+	read -e -p "Enter Application Name: " inputpath
+	osascript -e 'quit app "'$inputpath'"'
+}
 
-#   findPid: find out the pid of a specified process
-#   -----------------------------------------------------
-#       Note that the command name can be specified via a regex
-#       E.g. findPid '/d$/' finds pids of all processes with names ending in 'd'
-#       Without the 'sudo' it will only find processes of the current user
-#   -----------------------------------------------------
-findPid () { lsof -t -c "$@" ; }
+# easy show invisible files
+alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
+alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
 
-#   memHogsTop, memHogsPs:  Find memory hogs
-#   -----------------------------------------------------
-alias memHogsTop='top -l 1 -o rsize | head -20'
-alias memHogsPs='ps wwaxm -o pid,stat,vsize,rss,time,command | head -10'
-
-#   cpuHogs:  Find CPU hogs
-#   -----------------------------------------------------
-alias cpu_hogs='ps wwaxr -o pid,stat,%cpu,time,command | head -10'
-
-#   topForever:  Continual 'top' listing (every 10 seconds)
-#   -----------------------------------------------------
-alias topForever='top -l 9999999 -s 10 -o cpu'
-
-#   ttop:  Recommended 'top' invocation to minimize resources
-#   ------------------------------------------------------------
-#       Taken from this macosxhints article
-#       http://www.macosxhints.com/article.php?story=20060816123853639
-#   ------------------------------------------------------------
-alias ttop="top -R -F -s 10 -o rsize"
-
-
-#   Memory checker
-# Top
-alias topcpu='top -o cpu'
-alias topmem='top -o rsize' # memory
-alias topten="top -R -F -s 10 -o rsize"
-
-#   cleanupDS:  Recursively delete .DS_Store files
-#   -------------------------------------------------------------------
 alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
 
 #   cleanupLS:  Clean up LaunchServices to remove duplicates in the "Open With" menu
-#   -----------------------------------------------------------------------------------
 alias cleanupLS="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
 
 #    screensaverDesktop: Run a screensaver on the Desktop
-#   -----------------------------------------------------------------------------------
 alias screensaverDesktop='/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine -background'
