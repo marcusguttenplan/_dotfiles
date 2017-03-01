@@ -88,6 +88,26 @@ alias gitremote="git remote add origin"
 alias gitsub="git submodule add"
 alias gitsubup="git submodule update --recursive --remote"
 
+# Update All Repos in Current Directory
+updaterepos () {
+    # store the current dir
+    CUR_DIR=$(pwd)
+    echo "\n\033[1mPulling in latest changes for all repositories...\033[0m\n"
+    # Find all git repositories and update it to the master latest revision
+    for i in $(find . -name ".git" | cut -c 3-); do
+        echo "";
+        echo "\033[33m"+$i+"\033[0m";
+        # We have to go to the .git parent directory to call the pull command
+        cd "$i";
+        cd ..;
+
+        git pull origin master;
+
+        cd $CUR_DIR
+    done
+    echo "\n\033[32mComplete!\033[0m\n"
+}
+
 
 
 
@@ -107,6 +127,11 @@ alias gamed="launchctl unload /System/Library/LaunchAgents/com.apple.gamed.plist
 
 # scrub exif data from an image
 alias scrub="exiftool -all="
+# list all metadata for file
+alias metacheck="mdls"
+alias metadeep="xattr"
+alias metachange="SetFile"
+alias datechanger="SetFile -d '8/4/2001 16:13'"
 
 # change hostname
 alias changeHostname="sudo scutil --set HostName"
