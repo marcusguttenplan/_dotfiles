@@ -18,6 +18,7 @@ BLUE='\033[01;34m'
 PURP='\033[00;35m'
 CY='\033[01;36m'
 MAG='\033[01;35m'
+WHITE='\033[00;01m'
 NC='\033[00m' # No Color
 
 # math
@@ -92,13 +93,10 @@ alias gitsubup="git submodule update --recursive --remote"
 #eval "$(gulp --completion=bash)"
 
 # CD && ATOM && GULP
-#function atomicgulp(){
-#  # echo "Enter Directory: "
-#	read -e -p "Enter Project Directory: " inputpath
-#	# echo "Enter gulp command: "
-#  # read -p "Enter gulp command: gulp + " gulpcmd
-#	cd "$inputpath" && atom . && gulp
-#}
+function atomicgulp(){
+	read -e -p "Enter Project Directory: " inputpath
+	cd "$inputpath" && atom . && gulp
+}
 
 
 # generate a self-signed ssl cert
@@ -204,26 +202,35 @@ ii() {
 
 #   Change Prompt
 #   ------------------------------------------------------------
-export PS1="________________________________________________________________________________\n| \w @ \h (\u) \n| => "
-export PS2="| => "
+#export PS1="________________________________________________________________________________\n| \w @ \h (\u) \n| => "
+#export PS2="| => "
 
 #   Change Prompt Color for Various Servers (the tmux effect)
 #   ------------------------------------------------------------
 
-# Green
-#export PS1="\[\033[01;32m\]________________________________________________________________________________\n| \w @ \h (\u) \n| => \[\033[00m\]"
-#export PS2="\[\033[01;32m\]| => \[\033[00m\]"
+# R/G
+export PS1="${GREEN}________________________________________________________________________________\n| \w ${RED}@\h${NC}${GREEN} (\u) \n| => ${NC}"
+export PS2="${GREEN}| => ${NC}"
+
+# R/G/W
+# export PS1="${GREEN}________________________________________________________________________________\n| \w ${WHITE}@\h${NC} ${GREEN}(${NC}${RED}\u${NC}${GREEN}) \n| => ${NC}"
+# export PS2="${GREEN}| => ${NC}"
+
+# B/Y
+# export PS1="${BLUE}________________________________________________________________________________\n|${NC} ${YEL}\w${NC} ${WHITE}@\h${NC} ${BLUE}(${NC}${YEL}\u${NC}${BLUE}) \n| => ${NC}"
+# export PS2="${GREEN}| => ${NC}"
 
 # Cyan
-#export PS1="\[\033[01;36m\]________________________________________________________________________________\n| \w @ \h (\u) \n| => \[\033[00m\]"
-#export PS2="\[\033[01;36m\]| => \[\033[00m\]"
+#export PS1="${CY}________________________________________________________________________________\n| \w @ \h (\u) \n| => ${NC}"
+#export PS2="${CY}| => ${NC}"
 
 # Blue
-#export PS1="\[\033[01;34m\]________________________________________________________________________________\n| \w @ \h (\u) \n| => \[\033[00m\]"
-#export PS2="\[\033[01;34m\]| => \[\033[00m\]"
+#export PS1="${BLUE}________________________________________________________________________________\n| \w @ \h (\u) \n| => ${NC}"
+#export PS2="${BLUE}| => ${NC}"
 
-
-
+# Green
+#export PS1="$GREEN________________________________________________________________________________\n| \w @ \h (\u) \n| => ${NC}"
+#export PS2="${GREEN}| => ${NC}"
 
 #   Set Default Editor (change 'Nano' to the editor of your choice)
 #   ------------------------------------------------------------
@@ -240,7 +247,6 @@ export BLOCKSIZE=1k
 #   ------------------------------------------------------------
 #   export CLICOLOR=1
 #   export LSCOLORS=ExFxBxDxCxegedabagacad
-
 
 #   -----------------------------
 #   2.  MAKE TERMINAL BETTER
@@ -323,10 +329,6 @@ extract () {
      fi
 }
 
-
-
-
-
 #   ---------------------------
 #   4.  SEARCHING
 #   ---------------------------
@@ -381,16 +383,6 @@ my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command ; }
 alias topcpu='top -o cpu'
 alias topmem='top -o rsize' # memory
 alias topten="top -R -F -s 10 -o rsize"
-
-# List Hardware Interfaces
-alias hwcheck='networksetup -listallhardwareports'
-
-# Remaining Battery Time (OS X)
-#alas battTime="pmset -g batt | egrep "([0-9]+\%).*" -o --colour=auto | cut -f3 -d';'"
-
-# Remaining Battery Percent (OS X)
-#alias battPercentage="pmset -g batt | egrep "([0-9]+\%).*" -o --colour=auto | cut -f1 -d';'"
-
 
 #   cleanupDS:  Recursively delete .DS_Store files
 #   -------------------------------------------------------------------
