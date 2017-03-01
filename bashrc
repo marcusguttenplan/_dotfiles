@@ -29,22 +29,6 @@ NC='\033[00m' # No Color
 # show alias: to remind yourself of an alias (given some part of it)
 showa () { /usr/bin/grep --color=always -i -a1 $@ ~/Library/init/bash/aliases.bash | grep -v '^\s*$' | less -FSRXc ; }
 
-#clear terminal
-alias clear="clear && printf '\e[3J'"
-
-# easy show invisible files
-alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
-alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
-
-# DNS Flush
-alias flush="sudo killall -HUP mDNSResponder"
-
-# generate quick spook lorem for passwords. REQUIRES brew install lorem
-alias spook="lorem --spook --randomize"
-
-# disable gamed
-alias gamed="launchctl unload /System/Library/LaunchAgents/com.apple.gamed.plist"
-
 # mute the system volume
 alias stfu="osascript -e 'set volume output muted true' && echo 'muted!'"
 
@@ -57,6 +41,8 @@ function quitter(){
 	read -e -p "Enter Application Name: " inputpath
 	osascript -e 'quit app "'$inputpath'"'
 }
+
+
 
 
 
@@ -84,6 +70,94 @@ alias gitremote="git remote add origin"
 # Add submodules
 alias gitsub="git submodule add"
 alias gitsubup="git submodule update --recursive --remote"
+
+
+
+
+
+
+#  ----------------------------------------------------------------------------
+#
+#  Security
+#
+#  ----------------------------------------------------------------------------
+
+# generate quick spook lorem for passwords. REQUIRES brew install lorem
+alias spook="lorem --spook --randomize"
+
+# disable gamed
+alias gamed="launchctl unload /System/Library/LaunchAgents/com.apple.gamed.plist"
+
+# scrub exif data from an image
+alias scrub="exiftool -all="
+
+# change hostname
+alias changeHostname="sudo scutil --set HostName"
+
+# show and scramble mac addresses
+maclist() {
+    for x in `ifconfig | expand | cut -c1-8 | sort | uniq -u | awk -F: '{print $1;}'`; do echo -ne "${YEL}$x:${NC}" &&  macchanger -s $x; done
+}
+
+macscram(){
+    for x in `ifconfig | expand | cut -c1-8 | sort | uniq -u | awk -F: '{print $1;}' | grep -Fvx -e lo0 -e bridge0 -e awdl0`; do macchanger -r $x; done
+}
+
+alias wifiscram="macchanger -r en0"
+alias ethscram="macchanger -r eth0"
+
+# IP infos
+iplist(){
+    for x in `ifconfig | awk '$1 == "inet" {print "'${YEL}'" $2 "'${NC}'" }' | sed 's/://g'`; do echo -e $x; done
+}
+
+netcheck(){
+    portcheck | awk '$8 == "TCP" { print "'${YEL}'" $1, "'${NC}'" "'${BLUE}'" $3 "'${NC}'" "'${YEL}'","'${NC}'"  "'${YEL}'" $9 "'${NC}'" }'
+}
+
+alias ipcheck0='ipconfig getpacket en0'
+alias ipcheck1='ipconfig getpacket en1'
+
+# Port Info
+alias portscan="sudo nmap -sV -Pn -p- -T4"
+alias portcheck="sudo lsof -i"
+alias udpcheck="sudo /usr/sbin/lsof -nP | grep UDP"
+alias tcpcheck="sudo /usr/sbin/lsof -nP | grep TCP"
+alias socketcheck="sudo /usr/sbin/lsof -i -P"
+
+# system auditing
+alias kextcheck="sudo ls -al /var/db/dslocal/nodes/Default/users && kextstat -l | grep -v com.apple"
+alias daemoncheck="sudo launchctl list | grep -v com.apple && launchctl list | grep -v com.apple"
+alias usercheck="dscl . list /Users"
+alias userinfo="dscacheutil -q user"
+alias fwcheck="pfctl -s rules"
+alias fwinfo="sudo pfctl -s info"
+processcheck() {
+    ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command
+}
+
+# Get public IP from openDNS
+alias watismyip="echo 'the internet sees you RIGHT NOW as:' && dig +short myip.opendns.com @resolver1.opendns.com"
+
+# DNS Flush
+alias flushDNS='dscacheutil -flushcache'            # flushDNS:     Flush out the DNS Cache
+alias flush="sudo killall -HUP mDNSResponder && flushDNS"
+
+#   ii:  display useful host related informaton
+ii() {
+    echo -e "\nYou are logged on ${RED}$HOST"
+    echo -e "\nAdditionnal information:$NC " ; uname -a
+    echo -e "\n${RED}Users logged on:$NC " ; w -h
+    echo -e "\n${RED}Current date :$NC " ; date
+    echo -e "\n${RED}Machine stats :$NC " ; uptime
+    echo -e "\n${RED}Current network location :$NC " ; scselect
+    echo -e "\n${RED}IP Addresses :$NC " ; iplist
+    #echo -e "\n${RED}DNS Configuration:$NC " ; scutil --dns
+    echo
+}
+
+
+
 
 
 # Dev
@@ -124,73 +198,7 @@ htmlhunter () {
         done
 }
 
-#  ----------------------------------------------------------------------------
-#
-#  Elite
-#
-#  ----------------------------------------------------------------------------
 
-# change hostname
-alias changeHostname="sudo scutil --set HostName"
-
-# show and scramble mac addresses
-maclist() {
-    for x in `ifconfig | expand | cut -c1-8 | sort | uniq -u | awk -F: '{print $1;}'`; do echo -ne "${YEL}$x:${NC}" &&  macchanger -s $x; done
-}
-macscram(){
-    for x in `ifconfig | expand | cut -c1-8 | sort | uniq -u | awk -F: '{print $1;}' | grep -Fvx -e lo0 -e bridge0 -e awdl0`; do macchanger -r $x; done
-}
-alias wifiscram="macchanger -r en0"
-alias ethscram="macchanger -r eth0"
-
-# scrub exif data from an image
-alias scrub="exiftool -all="
-
-# IP list
-# ipcheck(){
-#     for x in `ifconfig | awk '$1 == "inet" {print "'${YEL}'" $2 "'${NC}'" }' | sed 's/://g'`; do echo -e $x; done
-# }
-
-iplist(){
-    for x in `ifconfig | awk '$1 == "inet" {print "'${YEL}'" $2 "'${NC}'" }' | sed 's/://g'`; do echo -e $x; done
-}
-
-netcheck(){
-    portcheck :80 | awk '$8 == "TCP" { print "'${YEL}'" $1, "'${NC}'" "'${BLUE}'" $3 "'${NC}'" "'${YEL}'","'${NC}'"  "'${YEL}'" $9 "'${NC}'" }'
-}
-
-#easy nmap
-alias portscan="sudo nmap -sV -Pn -p- -T4"
-alias portcheck="sudo lsof -i"
-alias kextcheck="sudo ls -al /var/db/dslocal/nodes/Default/users && kextstat -l | grep -v com.apple"
-alias usercheck="dscl . list /Users"
-alias userinfo="dscacheutil -q user"
-
-# Get public IP from openDNS
-alias watismyip="echo 'the internet sees you RIGHT NOW as:' && dig +short myip.opendns.com @resolver1.opendns.com"
-
-# networking tools
-alias flushDNS='dscacheutil -flushcache'            # flushDNS:     Flush out the DNS Cache
-alias lsock='sudo /usr/sbin/lsof -i -P'             # lsock:        Display open sockets
-alias lsockU='sudo /usr/sbin/lsof -nP | grep UDP'   # lsockU:       Display only open UDP sockets
-alias lsockT='sudo /usr/sbin/lsof -nP | grep TCP'   # lsockT:       Display only open TCP sockets
-alias ipInfo0='ipconfig getpacket en0'              # ipInfo0:      Get info on connections for en0
-alias ipInfo1='ipconfig getpacket en1'              # ipInfo1:      Get info on connections for en1
-alias openPorts='sudo lsof -i | grep LISTEN'        # openPorts:    All listening connections
-alias showBlocked='sudo ipfw list'                  # showBlocked:  All ipfw rules inc/ blocked IPs
-
-#   ii:  display useful host related informaton
-ii() {
-    echo -e "\nYou are logged on ${RED}$HOST"
-    echo -e "\nAdditionnal information:$NC " ; uname -a
-    echo -e "\n${RED}Users logged on:$NC " ; w -h
-    echo -e "\n${RED}Current date :$NC " ; date
-    echo -e "\n${RED}Machine stats :$NC " ; uptime
-    echo -e "\n${RED}Current network location :$NC " ; scselect
-    echo -e "\n${RED}IP Addresses :$NC " ; iplist
-    #echo -e "\n${RED}DNS Configuration:$NC " ; scutil --dns
-    echo
-}
 
 
 
@@ -307,6 +315,13 @@ EOT
     cd "$currFolderPath"
 }
 
+#clear terminal
+alias clear="clear && printf '\e[3J'"
+
+# easy show invisible files
+alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
+alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
+
 #   extract:  Extract most know archives with one command
 extract () {
     if [ -f $1 ] ; then
@@ -374,9 +389,6 @@ alias topForever='top -l 9999999 -s 10 -o cpu'
 #   ------------------------------------------------------------
 alias ttop="top -R -F -s 10 -o rsize"
 
-#   my_ps: List processes owned by my user:
-#   ------------------------------------------------------------
-my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command ; }
 
 #   Memory checker
 # Top
