@@ -1,10 +1,8 @@
-#  ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 #
-#  WOW, I MADE A BASH PROFILE
+# Environmentals
 #
-#  ---------------------------------------------------------------------------
-
-
+# ----------------------------------------------------------------------------
 
 # global color vars to make it easy to prettify
 RED='\033[01;31m'
@@ -17,19 +15,49 @@ MAG='\033[01;35m'
 WHITE='\033[00;01m'
 NC='\033[00m' # No Color
 
-# math
-= () {
-    bc -l <<< "$@"
-}
+#   Change Prompt
+#export PS1="________________________________________________________________________________\n| \w @ \h (\u) \n| => "
+#export PS2="| => "
 
-# show alias: to remind yourself of an alias (given some part of it)
-showa () { /usr/bin/grep --color=always -i -a1 $@ ~/Library/init/bash/aliases.bash | grep -v '^\s*$' | less -FSRXc ; }
+# R/G
+export PS1="${GREEN}________________________________________________________________________________\n| \w ${RED}@\h${NC}${GREEN} (\u) \n| => ${NC}"
+export PS2="${GREEN}| => ${NC}"
 
-# mute the system volume
-alias stfu="osascript -e 'set volume output muted true' && echo 'muted!'"
+# R/G/W
+# export PS1="${GREEN}________________________________________________________________________________\n| \w ${WHITE}@\h${NC} ${GREEN}(${NC}${RED}\u${NC}${GREEN}) \n| => ${NC}"
+# export PS2="${GREEN}| => ${NC}"
 
-# clip working directory path
-alias clipPath='pwd|tr -d "\n"|pbcopy'
+# B/Y
+# export PS1="${BLUE}________________________________________________________________________________\n|${NC} ${YEL}\w${NC} ${WHITE}@\h${NC} ${BLUE}(${NC}${YEL}\u${NC}${BLUE}) \n| => ${NC}"
+# export PS2="${GREEN}| => ${NC}"
+
+# Cyan
+#export PS1="${CY}________________________________________________________________________________\n| \w @ \h (\u) \n| => ${NC}"
+#export PS2="${CY}| => ${NC}"
+
+# Blue
+#export PS1="${BLUE}________________________________________________________________________________\n| \w @ \h (\u) \n| => ${NC}"
+#export PS2="${BLUE}| => ${NC}"
+
+# Green
+#export PS1="$GREEN________________________________________________________________________________\n| \w @ \h (\u) \n| => ${NC}"
+#export PS2="${GREEN}| => ${NC}"
+
+#   Set Default Editor (change 'Nano' to the editor of your choice)
+export EDITOR=/usr/bin/nano
+
+#   Set default blocksize for ls, df, du
+export BLOCKSIZE=1k
+
+#   Add color to terminal
+#   export CLICOLOR=1
+#   export LSCOLORS=ExFxBxDxCxegedabagacad
+
+
+
+
+
+
 
 
 
@@ -65,10 +93,10 @@ alias gitsubup="git submodule update --recursive --remote"
 
 
 
-#  ----------------------------------------------------------------------------
-#
+
+
+
 #  Security
-#
 #  ----------------------------------------------------------------------------
 
 # generate quick spook lorem for passwords. REQUIRES brew install lorem
@@ -121,6 +149,9 @@ alias usercheck="dscl . list /Users"
 alias userinfo="dscacheutil -q user"
 alias fwcheck="pfctl -s rules"
 alias fwinfo="sudo pfctl -s info"
+alias hwcheck='networksetup -listallhardwareports'
+
+# memory-specific
 processcheck() {
     ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command
 }
@@ -165,12 +196,19 @@ ii() {
 
 
 
+
+
+
 # Dev
 # ----------------------------------------------------------------------------
 
+# math
+= () {
+    bc -l <<< "$@"
+}
+
 # Add gulp to autocompletion
 #eval "$(gulp --completion=bash)"
-
 # CD && ATOM && GULP
 function atomicgulp(){
 	read -e -p "Enter Project Directory: " inputpath
@@ -207,49 +245,7 @@ htmlhunter () {
 
 
 
-# ----------------------------------------------------------------------------
-#
-# Environmentals
-#
-# ----------------------------------------------------------------------------
 
-#   Change Prompt
-#export PS1="________________________________________________________________________________\n| \w @ \h (\u) \n| => "
-#export PS2="| => "
-
-# R/G
-export PS1="${GREEN}________________________________________________________________________________\n| \w ${RED}@\h${NC}${GREEN} (\u) \n| => ${NC}"
-export PS2="${GREEN}| => ${NC}"
-
-# R/G/W
-# export PS1="${GREEN}________________________________________________________________________________\n| \w ${WHITE}@\h${NC} ${GREEN}(${NC}${RED}\u${NC}${GREEN}) \n| => ${NC}"
-# export PS2="${GREEN}| => ${NC}"
-
-# B/Y
-# export PS1="${BLUE}________________________________________________________________________________\n|${NC} ${YEL}\w${NC} ${WHITE}@\h${NC} ${BLUE}(${NC}${YEL}\u${NC}${BLUE}) \n| => ${NC}"
-# export PS2="${GREEN}| => ${NC}"
-
-# Cyan
-#export PS1="${CY}________________________________________________________________________________\n| \w @ \h (\u) \n| => ${NC}"
-#export PS2="${CY}| => ${NC}"
-
-# Blue
-#export PS1="${BLUE}________________________________________________________________________________\n| \w @ \h (\u) \n| => ${NC}"
-#export PS2="${BLUE}| => ${NC}"
-
-# Green
-#export PS1="$GREEN________________________________________________________________________________\n| \w @ \h (\u) \n| => ${NC}"
-#export PS2="${GREEN}| => ${NC}"
-
-#   Set Default Editor (change 'Nano' to the editor of your choice)
-export EDITOR=/usr/bin/nano
-
-#   Set default blocksize for ls, df, du
-export BLOCKSIZE=1k
-
-#   Add color to terminal
-#   export CLICOLOR=1
-#   export LSCOLORS=ExFxBxDxCxegedabagacad
 
 
 
@@ -310,6 +306,9 @@ EOT
     cd "$currFolderPath"
 }
 
+# clip working directory path
+alias clipit='pwd|tr -d "\n"|pbcopy'
+
 #clear terminal
 alias clear="clear && printf '\e[3J'"
 
@@ -338,6 +337,9 @@ extract () {
 
 
 
+
+
+
 #   SEARCHING
 #   -------------------------------------------------------------------
 
@@ -348,11 +350,14 @@ ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name end
 
 
 
+
+
+
 #   OSX SPECIFICS
 #   -------------------------------------------------------------------
 
-# List Hardware Interfaces
-alias hwcheck='networksetup -listallhardwareports'
+# mute the system volume
+alias stfu="osascript -e 'set volume output muted true' && echo 'muted!'"
 
 # Remaining Battery Time (OS X)
 # alias battTime="pmset -g batt | egrep "([0-9]+\%).*" -o --colour=auto | cut -f3 -d';'"
