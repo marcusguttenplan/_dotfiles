@@ -10,6 +10,16 @@
 #  Daily tools
 #  ----------------------------------------------------------------------------
 
+# global color vars to make it easy to prettify
+RED='\033[01;31m'
+YEL='\033[01;33m'
+GREEN='\033[01;32m'
+BLUE='\033[01;34m'
+PURP='\033[00;35m'
+CY='\033[01;36m'
+MAG='\033[01;35m'
+NC='\033[00m' # No Color
+
 # math
 = () {
     bc -l <<< "$@"
@@ -127,8 +137,6 @@ alias changeHostname="sudo scutil --set HostName"
 
 # show and scramble mac addresses
 maclist() {
-    YEL='\033[01;33m'
-    NC='\033[00m' # No Color
     for x in `ifconfig | expand | cut -c1-8 | sort | uniq -u | awk -F: '{print $1;}'`; do echo -ne "${YEL}$x:${NC}" &&  macchanger -s $x; done
 }
 macscram(){
@@ -141,12 +149,20 @@ alias ethscram="macchanger -r eth0"
 alias scrub="exiftool -all="
 
 # IP list
+# ipcheck(){
+#     for x in `ifconfig | awk '$1 == "inet" {print "'${YEL}'" $2 "'${NC}'" }' | sed 's/://g'`; do echo -e $x; done
+# }
+
 iplist(){
-    for x in `ifconfig | awk '$1 == "inet" {print $2}'`; do echo -e "${YEL}$x:${NC}"; done
+    for x in `ifconfig | awk '$1 == "inet" {print "'${YEL}'" $2 "'${NC}'" }' | sed 's/://g'`; do echo -e $x; done
+}
+
+netcheck(){
+    portcheck :80 | awk '$8 == "TCP" { print "'${YEL}'" $1, "'${NC}'" "'${BLUE}'" $3 "'${NC}'" "'${YEL}'","'${NC}'"  "'${YEL}'" $9 "'${NC}'" }'
 }
 
 #easy nmap
-alias scan="sudo nmap -sV -Pn -p- -T4"
+alias portscan="sudo nmap -sV -Pn -p- -T4"
 alias portcheck="sudo lsof -i"
 alias kextcheck="sudo ls -al /var/db/dslocal/nodes/Default/users && kextstat -l | grep -v com.apple"
 alias usercheck="dscl . list /Users"
@@ -173,7 +189,7 @@ ii() {
     echo -e "\n${RED}Current date :$NC " ; date
     echo -e "\n${RED}Machine stats :$NC " ; uptime
     echo -e "\n${RED}Current network location :$NC " ; scselect
-    echo -e "\n${RED}Public facing IP Address :$NC " ;watismyip
+    echo -e "\n${RED}IP Addresses :$NC " ; iplist
     #echo -e "\n${RED}DNS Configuration:$NC " ; scutil --dns
     echo
 }
