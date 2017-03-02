@@ -181,6 +181,8 @@ alias portcheck="sudo lsof -i"
 alias udpcheck="sudo /usr/sbin/lsof -nP | grep UDP"
 alias tcpcheck="sudo /usr/sbin/lsof -nP | grep TCP"
 alias socketcheck="sudo /usr/sbin/lsof -i -P"
+alias sniff="sudo ngrep port 443"
+alias sniffhttp="sudo ngrep port 80"
 
 # system auditing
 alias kextcheck="sudo ls -al /var/db/dslocal/nodes/Default/users && kextstat -l | grep -v com.apple"
@@ -220,12 +222,14 @@ alias flush="sudo killall -HUP mDNSResponder && flushDNS"
 
 #   ii:  display useful host related informaton
 ii() {
-    echo -e "\nYou are logged on ${RED}$HOST"
-    echo -e "\nAdditionnal information:$NC " ; uname -a
+    HOST=$(hostname)
+    USER=$(id -un)
+    echo -e "\nInternals:$NC " ; uname -a
+    echo -e "\n${YEL}$USER${NC} logged on to ${YEL}$HOST${NC}"
     echo -e "\n${RED}Users logged on:$NC " ; w -h
     echo -e "\n${RED}Current date :$NC " ; date
     echo -e "\n${RED}Machine stats :$NC " ; uptime
-    echo -e "\n${RED}Current network location :$NC " ; scselect
+    # echo -e "\n${RED}Current network location :$NC " ; scselect
     echo -e "\n${RED}IP Addresses :$NC " ; iplist
     #echo -e "\n${RED}DNS Configuration:$NC " ; scutil --dns
     echo
@@ -253,6 +257,15 @@ ii() {
 function atomicgulp(){
 	read -e -p "Enter Project Directory: " inputpath
 	cd "$inputpath" && atom . && gulp
+}
+
+
+function nginxauth () {
+	read -e -p "Enter Username: " usern
+    sudo sh -c "echo -n '"$usern":' >> /etc/nginx/.htpasswd"
+    sudo sh -c "openssl passwd -apr1 >> /etc/nginx/.htpasswd"
+    echo -e "Add '${YEL}auth_basic "Restricted";${NC}' to '${YEL}/etc/nginx/sites-available/*.conf${NC}'"
+    echo -e "Add '${YEL}auth_basic_user_file /etc/nginx/.htpasswd;${NC}' to '${YEL}/etc/nginx/sites-available/*.conf${NC}'"
 }
 
 
