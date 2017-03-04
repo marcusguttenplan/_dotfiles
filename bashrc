@@ -78,7 +78,7 @@ export BLOCKSIZE=1k
 
 
 
-# Git
+# Git (requires brew install git)
 # ----------------------------------------------------------------------------
 
 # Remove git from a project
@@ -134,13 +134,13 @@ updaterepos () {
 #  Security
 #  ----------------------------------------------------------------------------
 
-# generate quick spook lorem for passwords. REQUIRES brew install lorem
+# generate quick spook lorem for passwords. (REQUIRES brew install lorem_
 alias spook="lorem --spook --randomize"
 
 # disable gamed
 alias gamed="launchctl unload /System/Library/LaunchAgents/com.apple.gamed.plist"
 
-# scrub exif data from an image
+# scrub exif data from an image (requires brew install exiftool)
 alias scrub="exiftool -all="
 
 # set proxy without opening network prefs
@@ -161,7 +161,7 @@ alias datechanger="SetFile -d '8/4/2001 16:13'"
 # change hostname
 alias changeHostname="sudo scutil --set HostName"
 
-# show and scramble mac addresses
+# show and scramble mac addresses (requires brew install maccahanger)
 maclist() {
     for x in `ifconfig | expand | cut -c1-8 | sort | uniq -u | awk -F: '{print $1;}'`; do echo -ne "${YEL}$x:${NC}" &&  macchanger -s $x; done
 }
@@ -187,12 +187,38 @@ alias ipcheck1='ipconfig getpacket en1'
 
 # Port Info
 alias portscan="sudo nmap -sV -Pn -p- -T4"
-alias portcheck="sudo lsof -i"
-alias udpcheck="sudo /usr/sbin/lsof -nP | grep UDP"
-alias tcpcheck="sudo /usr/sbin/lsof -nP | grep TCP"
-alias socketcheck="sudo /usr/sbin/lsof -i -P"
-alias sniff="sudo ngrep port 443"
-alias sniffhttp="sudo ngrep port 80"
+alias portcheck="sudo lsof -Pni"
+alias udpcheck="sudo lsof -nP | grep UDP"
+alias tcpcheck="sudo lsof -nP | grep TCP"
+
+# sniffers (requires brew install ngrep wireshark)
+alias sniffssl="sudo ngrep port 443"
+sniffweb () {
+	sudo tshark -Y "http.request or http.response" -Tfields \
+	-e ip.dst \
+	-e http.request.full_uri \
+	-e http.request.method \
+	-e http.response.code \
+	-e http.response.phrase \
+	-Eseparator=/s
+}
+sniffdns () {
+	sudo tshark -Y "dns.flags.response == 1" -Tfields \
+	-e frame.time_delta \
+	-e dns.qry.name \
+	-e dns.a \
+	-Eseparator=,
+}
+sniffcerts () {
+	sudo tshark -Y "ssl.handshake.certificate" -Tfields \
+	-e ip.src \
+	-e x509sat.uTF8String \
+	-e x509sat.printableString \
+	-e x509sat.universalString \
+	-e x509sat.IA5String \
+	-e x509sat.teletexString \
+	-Eseparator=/s -Equote=d
+}
 
 # system auditing
 alias kextcheck="sudo ls -al /var/db/dslocal/nodes/Default/users && kextstat -l | grep -v com.apple"
