@@ -155,6 +155,7 @@ setproxy () {
 alias metacheck="mdls"
 alias metadeep="xattr"
 alias metachange="SetFile"
+alias metascrub="xattr -c"
 alias datechanger="SetFile -d '8/4/2001 16:13'"
 
 # change hostname
