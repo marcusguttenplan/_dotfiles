@@ -142,6 +142,15 @@ alias gamed="launchctl unload /System/Library/LaunchAgents/com.apple.gamed.plist
 
 # scrub exif data from an image
 alias scrub="exiftool -all="
+
+# set proxy without opening network prefs
+setproxy () {
+	read -p "Enter IP:Port i.e. 127.0.0.1:8118" ip
+	sudo networksetup -setwebproxy "Wi-Fi" $ip
+	sudo networksetup -setsecurewebproxy "Wi-Fi" $ip
+}
+
+
 # list all metadata for file
 alias metacheck="mdls"
 alias metadeep="xattr"
