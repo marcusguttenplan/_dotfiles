@@ -192,7 +192,13 @@ alias udpcheck="sudo lsof -nP | grep UDP"
 alias tcpcheck="sudo lsof -nP | grep TCP"
 
 # sniffers (requires brew install ngrep wireshark)
-alias sniffssl="sudo ngrep port 443"
+sniffssl () {
+    sudo tshark -i en0 -i utun0 -i utun1 -Y "tcp.port == 443" -Tfields \
+    -e frame.time \
+    -e ip.dst \
+    -e tcp.dstport \
+    -Eseparator=/s
+}
 sniffweb () {
 	sudo tshark -Y "http.request or http.response" -Tfields \
 	-e ip.dst \
