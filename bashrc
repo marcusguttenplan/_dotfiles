@@ -377,11 +377,23 @@ alias DT='tee ~/Desktop/terminalOut.txt'    # DT:           Pipe content to file
 
 # list working directories of all bash prompts
 pwdz () {
+
     ps -al | awk '$15 == "-bash" {
         print $2
     }' | xargs -n1 lsof -p | grep cwd | awk '$1 == "bash" {
         print "'${YEL}'" $9 "'${NC}'"
     }'
+}
+# change to a working directory of another bash prompt
+cwdz () {
+    cwd_array=($(pwdz))
+
+    select listopt in "${cwd_array[@]}"
+    do
+        [ -n "${listopt}" ] && break
+    done
+    echo "You selected: ${listopt}"
+    cd `echo $listopt | sed "s,$(printf '\033')\\[[0-9;]*[a-zA-Z],,g"`
 }
 
 #   lr:  Full Recursive Directory Listing
