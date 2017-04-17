@@ -375,6 +375,15 @@ trash () { command mv "$@" ~/.Trash ; }     # trash:        Moves a file to the 
 ql () { qlmanage -p "$*" >& /dev/null; }    # ql:           Opens any file in MacOS Quicklook Preview
 alias DT='tee ~/Desktop/terminalOut.txt'    # DT:           Pipe content to file on MacOS Desktop
 
+# list working directories of all bash prompts
+pwdz () {
+    ps -al | awk '$15 == "-bash" {
+        print $2
+    }' | xargs -n1 lsof -p | grep cwd | awk '$1 == "bash" {
+        print "'${YEL}'" $9 "'${NC}'"
+    }'
+}
+
 #   lr:  Full Recursive Directory Listing
 alias lr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\'' -e '\''s/^/   /'\'' -e '\''s/-/|/'\'' | less'
 
