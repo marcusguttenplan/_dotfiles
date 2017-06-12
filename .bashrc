@@ -27,20 +27,27 @@ WHITEF='\[\033[00;01m\]'
 NCF='\[\033[00m\]'
 
 # Change Prompt w/ Default Colors
-#export PS1="______________________________________________________________________________\n| \w @ \h (\u) \n| => "
-#export PS2="| => "
+export PS1="______________________________________________________________________________\n| \w @ \h (\u) \n| => "
+export PS2="| => "
+
+# Secure Prompt for Screenshots (Scrub PII)
+lockdown () {
+  export PS1="${GREENF}______________________________________________________________________________\n| \w ${WHITEF}@host${NCF} ${GREENF}(${NCF}${REDF}user${NCF}${GREENF}) \n| => ${NCF}"
+  export PS2="${GREENF}| => ${NCF}"
+}
+
 
 # R/G
 # export PS1="${GREENF}______________________________________________________________________________\n| \w ${REDF}@\h${NCF}${GREENF} (\u) \n| => ${NCF}"
 # export PS2="${GREENF}| => ${NCF}"
 
 # R/G/W
-# export PS1="${GREENF}______________________________________________________________________________\n| \w ${WHITEF}@\h${NCF} ${GREENF}(${NCF}${REDF}\u${NCF}${GREENF}) \n| => ${NCF}"
-# export PS2="${GREENF}| => ${NCF}"
+#export PS1="${GREENF}______________________________________________________________________________\n| \w ${WHITEF}@\h${NCF} ${GREENF}(${NCF}${REDF}\u${NCF}${GREENF}) \n| => ${NCF}"
+#export PS2="${GREENF}| => ${NCF}"
 
 # B/Y
-export PS1="${BLUEF}______________________________________________________________________________\n|${NCF} ${YELF}\w${NCF} ${WHITEF}@\h${NCF} ${BLUEF}(${NCF}${YELF}\u${NCF}${BLUEF}) \n| => ${NCF}"
-export PS2="${GREENF}| => ${NCF}"
+#export PS1="${BLUEF}______________________________________________________________________________\n|${NCF} ${YELF}\w${NCF} ${WHITEF}@\h${NCF} ${BLUEF}(${NCF}${YELF}\u${NCF}${BLUEF}) \n| => ${NCF}"
+#export PS2="${GREENF}| => ${NCF}"
 
 # Cyan
 # export PS1="${CYF}______________________________________________________________________________\n| \w @ \h (\u) \n| => ${NCF}"
@@ -78,7 +85,7 @@ export BLOCKSIZE=1k
 
 
 
-# Git (requires brew install git)
+# Git
 # ----------------------------------------------------------------------------
 
 # Remove git from a project
@@ -134,34 +141,24 @@ updaterepos () {
 #  Security
 #  ----------------------------------------------------------------------------
 
-# generate quick spook lorem for passwords. (REQUIRES brew install lorem_
+# generate quick spook lorem for passwords. REQUIRES brew install lorem
 alias spook="lorem --spook --randomize"
 
 # disable gamed
 alias gamed="launchctl unload /System/Library/LaunchAgents/com.apple.gamed.plist"
 
-# scrub exif data from an image (requires brew install exiftool)
+# scrub exif data from an image
 alias scrub="exiftool -all="
-
-# set proxy without opening network prefs
-setproxy () {
-	read -p "Enter IP:Port i.e. 127.0.0.1:8118" ip
-	sudo networksetup -setwebproxy "Wi-Fi" $ip
-	sudo networksetup -setsecurewebproxy "Wi-Fi" $ip
-}
-
-
 # list all metadata for file
 alias metacheck="mdls"
 alias metadeep="xattr"
 alias metachange="SetFile"
-alias metascrub="xattr -c"
 alias datechanger="SetFile -d '8/4/2001 16:13'"
 
 # change hostname
 alias changeHostname="sudo scutil --set HostName"
 
-# show and scramble mac addresses (requires brew install maccahanger)
+# show and scramble mac addresses
 maclist() {
     for x in `ifconfig | expand | cut -c1-8 | sort | uniq -u | awk -F: '{print $1;}'`; do echo -ne "${YEL}$x:${NC}" &&  macchanger -s $x; done
 }
@@ -178,18 +175,20 @@ iplist(){
     for x in `ifconfig | awk '$1 == "inet" {print "'${YEL}'" $2 "'${NC}'" }' | sed 's/://g'`; do echo -e $x; done
 }
 
-netcheck(){
-    portcheck | awk '$8 == "TCP" { print "'${YEL}'" $1, "'${NC}'" "'${BLUE}'" $3 "'${NC}'" "'${YEL}'","'${NC}'"  "'${YEL}'" $9 "'${NC}'" }'
-}
-
 alias ipcheck0='ipconfig getpacket en0'
 alias ipcheck1='ipconfig getpacket en1'
 
 # Port Info
 alias portscan="sudo nmap -sV -Pn -p- -T4"
-alias portcheck="sudo lsof -Pni"
-alias udpcheck="sudo lsof -nP | grep UDP"
-alias tcpcheck="sudo lsof -nP | grep TCP"
+alias netcheck="sudo lsof -i"
+portcheck () {
+    netcheck | awk '$8 == "TCP" {
+        print "'${YEL}'" $1 "'${NC}'","'${BLUE}'" $3 "'${NC}'" "'${YEL}'","'${NC}'"  "'${YEL}'" $9 "'${NC}'"
+    }'
+}
+alias udpcheck="sudo /usr/sbin/lsof -nP | grep UDP"
+alias tcpcheck="sudo /usr/sbin/lsof -nP | grep TCP"
+alias socketcheck="sudo /usr/sbin/lsof -i -P"
 
 # sniffers (requires brew install ngrep wireshark)
 sniffssl () {
@@ -200,38 +199,42 @@ sniffssl () {
     -Eseparator=/s
 }
 sniffweb () {
-	sudo tshark -Y "http.request or http.response" -Tfields \
-	-e ip.dst \
-	-e http.request.full_uri \
-	-e http.request.method \
-	-e http.response.code \
-	-e http.response.phrase \
-	-Eseparator=/s
+    sudo tshark -Y "http.request or http.response" -Tfields \
+    -e ip.dst \
+    -e http.request.full_uri \
+    -e http.request.method \
+    -e http.response.code \
+    -e http.response.phrase \
+    -Eseparator=/s
 }
 sniffdns () {
-	sudo tshark -Y "dns.flags.response == 1" -Tfields \
-	-e frame.time_delta \
-	-e dns.qry.name \
-	-e dns.a \
-	-Eseparator=,
+    sudo tshark -Y "dns.flags.response == 1" -Tfields \
+    -e frame.time_delta \
+    -e dns.qry.name \
+    -e dns.a \
+    -Eseparator=,
 }
 sniffcerts () {
-	sudo tshark -Y "ssl.handshake.certificate" -Tfields \
-	-e ip.src \
-	-e x509sat.uTF8String \
-	-e x509sat.printableString \
-	-e x509sat.universalString \
-	-e x509sat.IA5String \
-	-e x509sat.teletexString \
-	-Eseparator=/s -Equote=d
+    sudo tshark -Y "ssl.handshake.certificate" -Tfields \
+    -e ip.src \
+    -e x509sat.uTF8String \
+    -e x509sat.printableString \
+    -e x509sat.universalString \
+    -e x509sat.IA5String \
+    -e x509sat.teletexString \
+    -Eseparator=/s -Equote=d
 }
 
 # system auditing
-alias kextcheck="sudo ls -al /var/db/dslocal/nodes/Default/users && kextstat -l | grep -v com.apple"
+# alias kextcheck="open /Applications/KnockKnock.app"
+alias kextcheck="python /Users/marcusguttenplan/Dropbox/_dev/_security/knockknock/knockknock.py"
 alias daemoncheck="sudo launchctl list | grep -v com.apple && launchctl list | grep -v com.apple"
 alias usercheck="dscl . list /Users"
 alias userinfo="dscacheutil -q user"
-alias fwcheck="pfctl -s rules"
+userlist () {
+    sudo ls -al /var/db/dslocal/nodes/Default/users | grep -v com.apple | awk '{ print "'${YEL}'" $3 "'${NC}'" "'${BLUE}'" $5 "'${NC}'" "'${YEL}'","'${NC}'"  "'${YEL}'" $9 "'${NC}'" }'
+}
+alias fwcheck="sudo pfctl -s rules"
 alias fwinfo="sudo pfctl -s info"
 alias hwcheck='networksetup -listallhardwareports'
 
@@ -262,20 +265,6 @@ alias watismyip="echo 'the internet sees you RIGHT NOW as:' && dig +short myip.o
 alias flushDNS='dscacheutil -flushcache'            # flushDNS:     Flush out the DNS Cache
 alias flush="sudo killall -HUP mDNSResponder && flushDNS"
 
-#   ii:  display useful host related informaton
-ii() {
-    HOST=$(hostname)
-    USER=$(id -un)
-    echo -e "\nInternals:$NC " ; uname -a
-    echo -e "\n${YEL}$USER${NC} logged on to ${YEL}$HOST${NC}"
-    echo -e "\n${RED}Users logged on:$NC " ; w -h
-    echo -e "\n${RED}Current date :$NC " ; date
-    echo -e "\n${RED}Machine stats :$NC " ; uptime
-    # echo -e "\n${RED}Current network location :$NC " ; scselect
-    echo -e "\n${RED}IP Addresses :$NC " ; iplist
-    #echo -e "\n${RED}DNS Configuration:$NC " ; scutil --dns
-    echo
-}
 
 
 
@@ -301,7 +290,7 @@ function atomicgulp(){
 	cd "$inputpath" && atom . && gulp
 }
 
-
+# create a user and hashed password for nginx
 function nginxauth () {
 	read -e -p "Enter Username: " usern
     sudo sh -c "echo -n '"$usern":' >> /etc/nginx/.htpasswd"
@@ -310,15 +299,12 @@ function nginxauth () {
     echo -e "Add '${YEL}auth_basic_user_file /etc/nginx/.htpasswd;${NC}' to '${YEL}/etc/nginx/sites-available/*.conf${NC}'"
 }
 
-
 # generate a self-signed ssl cert
 sslkeygen(){
 	read -e -p "Enter Name of Cert to Generate: " certname
 	echo "Generating '$certname'"
 	openssl req -x509 -sha256 -newkey rsa:2048 -keyout $certname.key -out $certname.crt -days 1024 -nodes
 }
-
-
 
 # httpDebug:  Download a web page and show info on what took time
 httpDebug () { /usr/bin/curl $@ -o /dev/null -w "dns: %{time_namelookup} connect: %{time_connect} pretransfer: %{time_pretransfer} starttransfer: %{time_starttransfer} total: %{time_total}\n" ; }
@@ -373,11 +359,10 @@ alias cic='set completion-ignore-case On'   # cic:          Make tab-completion 
 mcd () { mkdir -p "$1" && cd "$1"; }        # mcd:          Makes new Dir and jumps inside
 trash () { command mv "$@" ~/.Trash ; }     # trash:        Moves a file to the MacOS trash
 ql () { qlmanage -p "$*" >& /dev/null; }    # ql:           Opens any file in MacOS Quicklook Preview
-alias DT='tee ~/Desktop/terminalOut.txt'    # DT:           Pipe content to file on MacOS Desktop
+alias pump='tee ~/Desktop/term_out.txt'     # DT:           Pipe content to file on MacOS Desktop
 
 # list working directories of all bash prompts
 pwdz () {
-
     ps -al | awk '$15 == "-bash" {
         print $2
     }' | xargs -n1 lsof -p | grep cwd | awk '$1 == "bash" {
@@ -394,7 +379,10 @@ cwdz () {
     done
     echo "You selected: ${listopt}"
     cd `echo $listopt | sed "s,$(printf '\033')\\[[0-9;]*[a-zA-Z],,g"`
+
+    cwd_array=()
 }
+
 
 #   lr:  Full Recursive Directory Listing
 alias lr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\'' -e '\''s/^/   /'\'' -e '\''s/-/|/'\'' | less'
@@ -501,6 +489,23 @@ alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
 alias cleanupLS="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
 
 #    screensaverDesktop: Run a screensaver on the Desktop
-alias screensave='/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine -background'
+alias screensaverDesktop='/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine -background'
+
+# call the information function whenever a new terminal window is opened
+#   ii:  display useful host related informaton
+ii() {
+    HOST=$(hostname)
+    USER=$(id -un)
+    echo -e "\n${RED}Internals:${NC} " ; uname -a
+    echo -e "\n${YEL}$USER${NC} logged on to ${YEL}$HOST${NC}"
+    echo -e "\n${RED}Users logged on:$NC " ; w -h
+    echo -e "\n${RED}Machine stats:$NC " ; uptime
+    echo -e "\n${RED}Current date:$NC " ; date | awk -F: '{print "'${YEL}'" $1 $2 $3 "'${NC}'";}'
+    echo -e "\n${RED}Current Working Dirs:$NC " ; pwdz
+    # echo -e "\n${RED}Current network location :$NC " ; scselect
+    echo -e "\n${RED}IP Addresses:$NC " ; iplist
+    #echo -e "\n${RED}DNS Configuration:$NC " ; scutil --dns
+    echo
+}
 
 ii
