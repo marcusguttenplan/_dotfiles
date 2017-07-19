@@ -180,6 +180,8 @@ alias ipcheck1='ipconfig getpacket en1'
 
 # Port Info
 alias portscan="sudo nmap -sV -Pn -p- -T4"
+alias census="sudo nmap -sP 192.168.2.1/24 -vv"
+alias arpy="arp -a -n"
 alias netcheck="sudo lsof -i"
 portcheck () {
     netcheck | awk '$8 == "TCP" {
@@ -452,7 +454,11 @@ ff () { /usr/bin/find . -name "$@" ; }      # ff:       Find file under the curr
 ffs () { /usr/bin/find . -name "$@"'*' ; }  # ffs:      Find file whose name starts with a given string
 ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name ends with a given string
 
-
+# alias search
+function getalias(){
+	read -e -p "Enter Phrase: " inputpath
+	grep -r  "$inputpath" ~/.bashrc
+}
 
 
 
