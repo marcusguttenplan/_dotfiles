@@ -1,8 +1,16 @@
+# LOCAL VARS
+
+# alias dev="cd Dropbox/_dev/_"
+
+
+
 # ----------------------------------------------------------------------------
 #
 # Environmentals
 #
 # ----------------------------------------------------------------------------
+
+HISTFILESIZE=5000
 
 # global color vars to make it easy to prettify
 RED='\033[01;31m'
@@ -88,6 +96,8 @@ export BLOCKSIZE=1k
 # Git
 # ----------------------------------------------------------------------------
 
+
+
 # Remove git from a project
 alias ungit="find . -name '.git' -exec rm -rf {} \;"
 
@@ -142,7 +152,7 @@ updaterepos () {
 #  ----------------------------------------------------------------------------
 
 # generate quick spook lorem for passwords. REQUIRES brew install lorem
-alias spook="lorem --spook --randomize"
+# alias spook="lorem --spook --randomize"
 
 # disable gamed
 alias gamed="launchctl unload /System/Library/LaunchAgents/com.apple.gamed.plist"
@@ -180,7 +190,7 @@ alias ipcheck1='ipconfig getpacket en1'
 
 # Port Info
 alias portscan="sudo nmap -sV -Pn -p- -T4"
-alias census="sudo nmap -F 192.168.2.1/24"
+alias census="sudo nmap -F"
 alias arpy="arp -a -n"
 alias netcheck="sudo lsof -i"
 portcheck () {
@@ -325,7 +335,8 @@ htmlhunter () {
 }
 
 
-
+# Markdown Viewer (`brew install mdv`)
+alias markdown='mdv'
 
 
 
@@ -372,7 +383,7 @@ pwdz () {
     }'
 }
 # change to a working directory of another bash prompt
-cwdz () {
+cdd () {
     cwd_array=($(pwdz))
 
     select listopt in "${cwd_array[@]}"
