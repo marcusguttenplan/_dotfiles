@@ -1,8 +1,5 @@
 # LOCAL VARS
 
-# alias dev="cd Dropbox/_dev/"
-
-
 
 # ----------------------------------------------------------------------------
 #
@@ -96,6 +93,9 @@ export BLOCKSIZE=1k
 # Git
 # ----------------------------------------------------------------------------
 
+
+
+
 # Remove git from a project
 alias ungit="find . -name '.git' -exec rm -rf {} \;"
 
@@ -112,7 +112,8 @@ alias pull="git pull"
 alias gitforcefetch="git fetch --all && git reset --hard origin/master"
 
 # Set new remote origin
-alias gitremote="git remote add origin"
+alias gitorigin="git remote add origin"
+alias gitset="git remote set-url origin"
 
 # Add submodules
 alias gitsub="git submodule add"
