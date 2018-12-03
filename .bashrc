@@ -1,8 +1,14 @@
+# LOCAL VARS
+
+# alias dev='/Dropbox/_dev/'
+
 # ----------------------------------------------------------------------------
 #
 # Environmentals
 #
 # ----------------------------------------------------------------------------
+
+HISTFILESIZE=5000
 
 # global color vars to make it easy to prettify
 RED='\033[01;31m'
@@ -27,8 +33,8 @@ WHITEF='\[\033[00;01m\]'
 NCF='\[\033[00m\]'
 
 # Change Prompt w/ Default Colors
-export PS1="______________________________________________________________________________\n| \w @ \h (\u) \n| => "
-export PS2="| => "
+# export PS1="______________________________________________________________________________\n| \w @ \h (\u) \n| => "
+# export PS2="| => "
 
 # Secure Prompt for Screenshots (Scrub PII)
 lockdown () {
@@ -42,8 +48,8 @@ lockdown () {
 # export PS2="${GREENF}| => ${NCF}"
 
 # R/G/W
-#export PS1="${GREENF}______________________________________________________________________________\n| \w ${WHITEF}@\h${NCF} ${GREENF}(${NCF}${REDF}\u${NCF}${GREENF}) \n| => ${NCF}"
-#export PS2="${GREENF}| => ${NCF}"
+export PS1="${GREENF}______________________________________________________________________________\n| \w ${WHITEF}@\h${NCF} ${GREENF}(${NCF}${REDF}\u${NCF}${GREENF}) \n| => ${NCF}"
+export PS2="${GREENF}| => ${NCF}"
 
 # B/Y
 #export PS1="${BLUEF}______________________________________________________________________________\n|${NCF} ${YELF}\w${NCF} ${WHITEF}@\h${NCF} ${BLUEF}(${NCF}${YELF}\u${NCF}${BLUEF}) \n| => ${NCF}"
@@ -88,6 +94,9 @@ export BLOCKSIZE=1k
 # Git
 # ----------------------------------------------------------------------------
 
+
+
+
 # Remove git from a project
 alias ungit="find . -name '.git' -exec rm -rf {} \;"
 
@@ -104,7 +113,8 @@ alias pull="git pull"
 alias gitforcefetch="git fetch --all && git reset --hard origin/master"
 
 # Set new remote origin
-alias gitremote="git remote add origin"
+alias gitorigin="git remote add origin"
+alias gitset="git remote set-url origin"
 
 # Add submodules
 alias gitsub="git submodule add"
@@ -142,7 +152,7 @@ updaterepos () {
 #  ----------------------------------------------------------------------------
 
 # generate quick spook lorem for passwords. REQUIRES brew install lorem
-alias spook="lorem --spook --randomize"
+# alias spook="lorem --spook --randomize"
 
 # disable gamed
 alias gamed="launchctl unload /System/Library/LaunchAgents/com.apple.gamed.plist"
@@ -180,7 +190,7 @@ alias ipcheck1='ipconfig getpacket en1'
 
 # Port Info
 alias portscan="sudo nmap -sV -Pn -p- -T4"
-alias census="sudo nmap -sP 192.168.2.1/24 -vv"
+alias census="sudo nmap -F"
 alias arpy="arp -a -n"
 alias netcheck="sudo lsof -i"
 portcheck () {
@@ -194,7 +204,7 @@ alias socketcheck="sudo /usr/sbin/lsof -i -P"
 
 # sniffers (requires brew install ngrep wireshark)
 sniffssl () {
-    sudo tshark -i en0 -i utun0 -i utun1 -Y "tcp.port == 443" -Tfields \
+    sudo tshark -i en0 -i utun0 -i utun1 -i ipsec0 -Y "tcp.port == 443" -Tfields \
     -e frame.time \
     -e ip.dst \
     -e tcp.dstport \
@@ -210,14 +220,14 @@ sniffweb () {
     -Eseparator=/s
 }
 sniffdns () {
-    sudo tshark -Y "dns.flags.response == 1" -Tfields \
+    sudo tshark -i en0 -i utun0 -i utun1 -i ipsec0 -Y "dns.flags.response == 1" -Tfields \
     -e frame.time_delta \
     -e dns.qry.name \
     -e dns.a \
     -Eseparator=,
 }
-sniffcerts () {
-    sudo tshark -Y "ssl.handshake.certificate" -Tfields \
+ sniffcerts () {
+    sudo tshark -i en0 -i utun0 -i utun1 -i ipsec0 -Y "ssl.handshake.certificate" -Tfields \
     -e ip.src \
     -e x509sat.uTF8String \
     -e x509sat.printableString \
@@ -325,7 +335,8 @@ htmlhunter () {
 }
 
 
-
+# Markdown Viewer (`brew install mdv`)
+alias markdown='mdv'
 
 
 
@@ -372,7 +383,7 @@ pwdz () {
     }'
 }
 # change to a working directory of another bash prompt
-cwdz () {
+cdd () {
     cwd_array=($(pwdz))
 
     select listopt in "${cwd_array[@]}"
@@ -463,6 +474,9 @@ function getalias(){
 
 
 
+
+
+
 #   OSX SPECIFICS
 #   -------------------------------------------------------------------
 
@@ -513,5 +527,6 @@ ii() {
     #echo -e "\n${RED}DNS Configuration:$NC " ; scutil --dns
     echo
 }
+
 
 ii
