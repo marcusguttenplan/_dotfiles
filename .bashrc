@@ -95,19 +95,7 @@ export BLOCKSIZE=1k
 # ----------------------------------------------------------------------------
 
 
-# Work git
-workgit(){
-    git config --global user.email sparksinteractive@wearesparks.com
-    git config --global user.name 39fe5ae1bcb41b424739c3052cf741c21c72eeda
-}
 
-# Personal git
-# alias gitHome="git config user.email marcusguttenplan@gmail.com"
-
-homegit(){
-    git config --global user.email marcusguttenplan@gmail.com
-    git config --global user.name 31b91076de047c506525bafd6fea05fad18c5809
-}
 
 # Remove git from a project
 alias ungit="find . -name '.git' -exec rm -rf {} \;"
