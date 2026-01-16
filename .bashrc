@@ -1,8 +1,6 @@
 # LOCAL VARS
 
-# alias dev="cd Dropbox/_dev/_"
-
-
+# add here
 
 # ----------------------------------------------------------------------------
 #
@@ -10,7 +8,7 @@
 #
 # ----------------------------------------------------------------------------
 
-HISTFILESIZE=5000
+HISTFILESIZE=25000
 
 # global color vars to make it easy to prettify
 RED='\033[01;31m'
@@ -96,8 +94,6 @@ export BLOCKSIZE=1k
 # Git
 # ----------------------------------------------------------------------------
 
-
-
 # Remove git from a project
 alias ungit="find . -name '.git' -exec rm -rf {} \;"
 
@@ -139,9 +135,6 @@ updaterepos () {
     done
     echo "\n\033[32mComplete!\033[0m\n"
 }
-
-
-
 
 
 
@@ -204,7 +197,7 @@ alias socketcheck="sudo /usr/sbin/lsof -i -P"
 
 # sniffers (requires brew install ngrep wireshark)
 sniffssl () {
-    sudo tshark -i en0 -i utun0 -i utun1 -i ipsec0 -Y "tcp.port == 443" -Tfields \
+    sudo tshark -i en0 -i utun0 -i utun1 -Y "tcp.port == 443" -Tfields \
     -e frame.time \
     -e ip.dst \
     -e tcp.dstport \
@@ -220,14 +213,14 @@ sniffweb () {
     -Eseparator=/s
 }
 sniffdns () {
-    sudo tshark -i en0 -i utun0 -i utun1 -i ipsec0 -Y "dns.flags.response == 1" -Tfields \
+    sudo tshark -i en0 -i utun0 -i utun1 -Y "dns.flags.response == 1" -Tfields \
     -e frame.time_delta \
     -e dns.qry.name \
     -e dns.a \
     -Eseparator=,
 }
  sniffcerts () {
-    sudo tshark -i en0 -i utun0 -i utun1 -i ipsec0 -Y "ssl.handshake.certificate" -Tfields \
+    sudo tshark -i en0 -i utun0 -i utun1 -Y "ssl.handshake.certificate" -Tfields \
     -e ip.src \
     -e x509sat.uTF8String \
     -e x509sat.printableString \
@@ -238,8 +231,6 @@ sniffdns () {
 }
 
 # system auditing
-# alias kextcheck="open /Applications/KnockKnock.app"
-alias kextcheck="python /Users/marcusguttenplan/Dropbox/_dev/_security/knockknock/knockknock.py"
 alias daemoncheck="sudo launchctl list | grep -v com.apple && launchctl list | grep -v com.apple"
 alias usercheck="dscl . list /Users"
 alias userinfo="dscacheutil -q user"
@@ -283,9 +274,6 @@ alias flush="sudo killall -HUP mDNSResponder && flushDNS"
 
 
 
-
-
-
 # Dev
 # ----------------------------------------------------------------------------
 
@@ -293,6 +281,11 @@ alias flush="sudo killall -HUP mDNSResponder && flushDNS"
 = () {
     bc -l <<< "$@"
 }
+
+# stop all docker
+alias dockerstopall='docker rm $(docker ps -aq)'
+# rm all docker
+alias dockerrmall='docker rm $(docker ps -aq)'
 
 # Add gulp to autocompletion
 #eval "$(gulp --completion=bash)"
@@ -337,8 +330,6 @@ htmlhunter () {
 
 # Markdown Viewer (`brew install mdv`)
 alias markdown='mdv'
-
-
 
 
 
@@ -392,6 +383,7 @@ cdd () {
     done
     echo "You selected: ${listopt}"
     cd `echo $listopt | sed "s,$(printf '\033')\\[[0-9;]*[a-zA-Z],,g"`
+
 
     cwd_array=()
 }
@@ -465,7 +457,7 @@ ff () { /usr/bin/find . -name "$@" ; }      # ff:       Find file under the curr
 ffs () { /usr/bin/find . -name "$@"'*' ; }  # ffs:      Find file whose name starts with a given string
 ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name ends with a given string
 
-# alias search
+# bash alias search
 function getalias(){
 	read -e -p "Enter Phrase: " inputpath
 	grep -r  "$inputpath" ~/.bashrc
