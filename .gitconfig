@@ -2,8 +2,6 @@
   name = marcusguttenplan
   email = marcusguttenplan@gmail.com
 
-
-
 [core]
 	excludesfile = /Users/marcusguttenplan/.gitignore
 [init]
