@@ -1,4 +1,4 @@
-# --- test.zsh-theme ---
+# --- local.zsh-theme ---
 
 # 1. Cleanup
 unset -f precmd 2>/dev/null
@@ -12,7 +12,7 @@ setopt PROMPT_SUBST
 # This allows us to inject it directly into the PROMPT variable
 draw_line() {
   local theme=${TERM_THEME:-green}
-  
+
   # Directory-based overrides
   if [[ "$PWD" == *"/work"* || "$PWD" == *"/aws"* ]]; then
     local current_theme="blue"
@@ -28,14 +28,14 @@ draw_line() {
     BASE="%B%F{118}" # Limegreen
     CONTRAST="%B%F{203}" # Red
   fi
-  
+
   # Return the line: Color + Underscores + Reset + Newline
   echo -n "${BASE}${(r:$COLUMNS::_:)}%b%f\n"
 }
 
 # 3. Prompt Construction
 # We call $(draw_line) at the very start of the PROMPT string
-PROMPT='$(draw_line)${BASE_COLOR}| %b%f%~ %B%F{white}@%m ${BASE_COLOR}(%b%f${CONTRAST_COLOR}%n%b%f${BASE_COLOR}) 
+PROMPT='$(draw_line)${BASE_COLOR}| %b%f%~ %B%F{white}@%m ${BASE_COLOR}(%b%f${CONTRAST_COLOR}%n%b%f${BASE_COLOR})
 ${BASE_COLOR}| => %b%f'
 
 PS2='${BASE_COLOR}| => %b%f'
