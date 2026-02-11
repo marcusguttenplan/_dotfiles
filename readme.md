@@ -1,20 +1,56 @@
-#DOTFILES
+# Bootstrapping a New Device
 
-These are for syncing across devices and new servers, because life is hard when the keys change.
+This repo contains dotfiles and shell settings for a new device
 
-edit `.bash_profile`
+## Usage
+
+### Install Packages
+
+Install homebrew
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+Install casks
+```
+brew install --cask google-chrome 1password raycast dropbox 1password-cli iterm2 displaylink eul visual-studio-code obsidian little-snitch
+```
+
+Install Oh My Zsh
+```
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
+
+### Configure Services
+
+Github
+```
+git config --global user.name "Marcus Guttenplan"
+git config --global user.email "marcusguttenplan@gmail.com"
+```
+
+Create public key for github and add to keys on website
+```
+ssh-keygen -t ed25519 -C "marcusguttenplan@gmail.com"
+ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+pbcopy < ~/.ssh/id_ed25519.pub
+```
+
+
+### Dotfiles
+```
+git clone git@github.com:marcusguttenplan/_dotfiles.git && cd _dotfiles
+```
 
 ```
-PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
-
-if [ -f ~/.bashrc ]; then
-   source ~/.bashrc
-fi
+cp .gitconfig ~
+cp .gitignore ~
+cp .vimrc ~
 ```
 
-and then add the above `.bashrc` file.
+### Zsh
 
-
-
-
-Shamelessly lifted from [Nate Landau](https://natelandau.com/my-mac-osx-bash_profile/) (Thank you).
+```
+cp zsh/.zshrc ~
+cp zsh/local.szh-theme ~/.oh-my-zsh/custom/themes
+```
