@@ -284,21 +284,35 @@ cd() { builtin cd "$@"; ll; }
 
 # pwdz for Zsh
 pwdz() {
-    ps -al | awk '$15 ~ /zsh/ {print $2}' | xargs -n1 lsof -p 2>/dev/null | grep cwd | awk '{print "'${YEL}'" $9 "'${NC}'"}'
+    pgrep zsh | xargs -I {} lsof -a -p {} -d cwd -Fn 2>/dev/null | \
+    sed -n 's/^n//p' | \
+    while read -r line; do
+        printf "${YEL}%s${NC}\n" "$line"
+    done
 }
 
-cdd () {
-    cwd_array=($(pwdz))
+cdd() {
+    # 1. Use mapfile (bash) or (f) flag (zsh) to split by newlines, not spaces
+    # This captures paths with spaces as single elements
+    local -a paths
+    paths=("${(@f)$(pwdz)}")
 
-    select listopt in "${cwd_array[@]}"
-    do
-        [ -n "${listopt}" ] && break
+    if [[ ${#paths} -eq 0 ]]; then
+        echo "No active zsh directories found."
+        return 1
+    fi
+
+    # 2. Use 'select' for the UI
+    # We display the list to the user
+    echo "Select a directory to cd into:"
+    select opt in "${paths[@]}"; do
+        if [[ -n "$opt" ]]; then
+            cd "$opt" || return 1
+            break
+        else
+            echo "Invalid selection."
+        fi
     done
-    echo "You selected: ${listopt}"
-    cd `echo $listopt | sed "s,$(printf '\033')\\[[0-9;]*[a-zA-Z],,g"`
-
-
-    cwd_array=()
 }
 
 # Quick Search
