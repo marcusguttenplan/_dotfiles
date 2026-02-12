@@ -54,7 +54,7 @@ cp .vimrc ~
 cp zsh/.zshrc ~
 cp zsh/.zprofile ~
 cp zsh/.zshenv ~
-cp zsh/local.szh-theme ~/.oh-my-zsh/custom/themes
+cp zsh/local.zsh-theme ~/.oh-my-zsh/custom/themes
 ```
 
 ### Setup Dev tools
