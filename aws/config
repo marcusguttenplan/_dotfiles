@@ -1,0 +1,98 @@
+[default]
+sso_session = farmstead-local
+sso_account_id = 065174849226
+sso_role_name = AdministratorAccess
+region = us-east-1
+output = json
+[sso-session farmstead-local]
+sso_start_url = https://impracticalapplications.awsapps.com/start/#
+sso_region = us-east-2
+sso_registration_scopes = sso:account:access
+
+[profile readonly]
+sso_session = impracticalapplications-readonly
+sso_account_id = 065174849226
+sso_role_name = ReadOnlyAccess
+region = us-east-1
+output = json
+[sso-session impracticalapplications-readonly]
+sso_start_url = https://impracticalapplications.awsapps.com/start
+sso_region = us-east-2
+sso_registration_scopes = sso:account:access
+
+[profile cc-mgmt]
+sso_session = cc-mgmt-farmstead
+sso_account_id = 756514214798
+sso_role_name = AWSAdministratorAccess
+region = us-east-1
+output = json
+[sso-session cc-mgmt-farmstead]
+sso_start_url = https://courseclear.awsapps.com/start/#/?tab=accounts
+sso_region = us-east-1
+sso_registration_scopes = sso:account:access
+
+[profile cc-admin]
+sso_session = cc-admin-farmstead
+sso_account_id = 672911155435
+sso_role_name = AWSAdministratorAccess
+region = us-east-1
+output = json
+[sso-session cc-admin-farmstead]
+sso_start_url = https://courseclear.awsapps.com/start/#/?tab=accounts
+sso_region = us-east-1
+sso_registration_scopes = sso:account:access
+
+[profile cc-admin-readonly]
+sso_session = marcusguttenplan-cc-admin-readonly
+sso_account_id = 672911155435
+sso_role_name = AWSReadOnlyAccess
+region = us-east-1
+output = json
+[sso-session marcusguttenplan-cc-admin-readonly]
+sso_start_url = https://courseclear.awsapps.com/start
+sso_region = us-east-1
+sso_registration_scopes = sso:account:access
+
+[profile cc-dns-readonly]
+sso_session = marcusguttenplan-cc-dns-readonly
+sso_account_id = 389364614025
+sso_role_name = AWSReadOnlyAccess
+region = us-east-1
+output = json
+[sso-session marcusguttenplan-cc-dns-readonly]
+sso_start_url = https://courseclear.awsapps.com/start/#/?tab=accounts
+sso_region = us-east-1
+sso_registration_scopes = sso:account:access
+
+[profile cc-dns-admin]
+sso_session = marcusguttenplan-cc-dns-admin
+sso_account_id = 389364614025
+sso_role_name = AWSAdministratorAccess
+region = us-east-1
+output = json
+[sso-session marcusguttenplan-cc-dns-admin]
+sso_start_url = https://courseclear.awsapps.com/start/#/?tab=accounts
+sso_region = us-east-1
+sso_registration_scopes = sso:account:access
+
+[profile cc-prod-admin]
+sso_session = marcusguttenplan-cc-prod-admin
+sso_account_id = 582071018097
+sso_role_name = AWSAdministratorAccess
+region = us-east-1
+output = json
+[sso-session marcusguttenplan-cc-prod-admin]
+sso_start_url = https://courseclear.awsapps.com/start/#/?tab=accounts
+sso_region = us-east-1
+sso_registration_scopes = sso:account:access
+
+[profile cc-staging]
+sso_session = marcusguttenplan-cc-staging
+sso_account_id = 426110694522
+sso_role_name = AWSAdministratorAccess
+region = us-east-1
+output = json
+[sso-session marcusguttenplan-cc-staging]
+sso_start_url = https://courseclear.awsapps.com/start/#/?tab=accounts
+sso_region = us-east-1
+sso_registration_scopes = sso:account:access
