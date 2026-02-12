@@ -14,7 +14,7 @@ draw_line() {
   local theme=${TERM_THEME:-green}
   
   # Directory-based overrides
-  if [[ "$PWD" == *"/work"* || "$PWD" == *"/aws"* ]]; then
+  if [[ "$PWD" == *"/work"* || "$PWD" == *"/_office"* ]]; then
     local current_theme="blue"
   else
     local current_theme="$theme"
@@ -35,7 +35,7 @@ draw_line() {
 
 # 3. Prompt Construction
 # We call $(draw_line) at the very start of the PROMPT string
-PROMPT='$(draw_line)${BASE_COLOR}| %b%f${BASE_COLOR}%~ %B%F{white}@%m ${BASE_COLOR}(%b%f${CONTRAST_COLOR}%n%b%f${BASE_COLOR}) 
+PROMPT='$(draw_line)${BASE_COLOR}| %b%f${CONTRAST_COLOR}%~ %B%F{white}@%m ${BASE_COLOR}(%b%f${CONTRAST_COLOR}%n%b%f${BASE_COLOR}) 
 ${BASE_COLOR}| => %b%f'
 
 PS2='${BASE_COLOR}| => %b%f'
@@ -43,7 +43,7 @@ PS2='${BASE_COLOR}| => %b%f'
 # 4. Helper to ensure colors are set for the rest of the prompt
 set_colors_hook() {
   local theme=${TERM_THEME:-green}
-  if [[ "$PWD" == *"/work"* || "$PWD" == *"/aws"* ]] || [[ "$theme" == "blue" ]]; then
+  if [[ "$PWD" == *"/work"* || "$PWD" == *"/_office"* ]] || [[ "$theme" == "blue" ]]; then
     BASE_COLOR="%B%F{blue}"
     CONTRAST_COLOR="%B%F{yellow}"
   else

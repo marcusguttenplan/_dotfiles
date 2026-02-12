@@ -222,14 +222,35 @@ alias flush="sudo killall -HUP mDNSResponder && dscacheutil -flushcache"
 alias dockerstopall='docker stop $(docker ps -aq)'
 alias dockerrmall='docker rm $(docker ps -aq)'
 
-function atomicgulp() {
-    vared -p "Enter Project Directory: " -c inputpath
-    cd "$inputpath" && subl . && gulp
-}
-
 function sslkeygen() {
     vared -p "Enter Name of Cert: " -c certname
     openssl req -x509 -sha256 -newkey rsa:2048 -keyout $certname.key -out $certname.crt -days 1024 -nodes
+}
+
+function showfiles(){
+  defaults write com.apple.finder AppleShowAllFiles -bool YES
+  killall Finder
+}
+
+function hidefiles(){
+  defaults write com.apple.finder AppleShowAllFiles -bool NO
+  killall Finder
+}
+
+cdf () {
+    currFolderPath=$( /usr/bin/osascript <<EOT
+        tell application "Finder"
+            try
+        set currFolder to (folder of the front window as alias)
+            on error
+        set currFolder to (path to desktop folder as alias)
+            end try
+            POSIX path of currFolder
+        end tell
+EOT
+    )
+    echo "cd to \"$currFolderPath\""
+    cd "$currFolderPath"
 }
 
 # ----------------------------------------------------------------------------

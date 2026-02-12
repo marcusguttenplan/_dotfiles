@@ -58,5 +58,9 @@ cp zsh/local.szh-theme ~/.oh-my-zsh/custom/themes
 ### Setup Dev tools
 
 ```
+brew install node nodenv rbenv ruby-build
+```
 
+```
+brew install qlstephen qlmarkdown betterzip
 ```
