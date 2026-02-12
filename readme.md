@@ -52,6 +52,8 @@ cp .vimrc ~
 
 ```
 cp zsh/.zshrc ~
+cp zsh/.zprofile ~
+cp zsh/.zshenv ~
 cp zsh/local.szh-theme ~/.oh-my-zsh/custom/themes
 ```
 
