@@ -79,7 +79,13 @@ ZSH_THEME="local"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git dotenv colorize gcloud)
+
+ZSH_COLORIZE_TOOL=chroma
+ZSH_COLORIZE_CHROMA_FORMATTER=terminal256
+
+# backup plugins
+# plugins=(1password aws tmux terraform)
 
 source $ZSH/oh-my-zsh.sh
 

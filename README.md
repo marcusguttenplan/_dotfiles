@@ -13,7 +13,7 @@ Install homebrew
 
 Install casks
 ```
-brew install --cask google-chrome 1password raycast dropbox 1password-cli iterm2 displaylink eul visual-studio-code obsidian little-snitch linear-linear tailscale-app docker-desktop font-meslo-lg-nerd-font
+brew install --cask google-chrome 1password raycast dropbox 1password-cli iterm2 displaylink eul visual-studio-code obsidian little-snitch linear-linear tailscale-app docker-desktop font-meslo-lg-nerd-font chroma
 ```
 
 Install Oh My Zsh
