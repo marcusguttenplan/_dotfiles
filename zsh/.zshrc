@@ -291,30 +291,47 @@ pwdz() {
     done
 }
 
+# 1. Internal helper to get clean, unique paths
+_get_raw_zsh_paths() {
+    pgrep zsh | xargs -I {} lsof -a -p {} -d cwd -Fn 2>/dev/null | \
+    sed -n 's/^n//p' | sort -u
+}
+
 cdd() {
-    # 1. Use mapfile (bash) or (f) flag (zsh) to split by newlines, not spaces
-    # This captures paths with spaces as single elements
+    # Local color definitions
+    local YEL=$'\e[1;33m'
+    local NC=$'\e[0m'
+
+    # Populate the RAW data array
     local -a paths
-    paths=("${(@f)$(pwdz)}")
+    paths=("${(@f)$(_get_raw_zsh_paths)}")
 
     if [[ ${#paths} -eq 0 ]]; then
         echo "No active zsh directories found."
         return 1
     fi
 
-    # 2. Use 'select' for the UI
-    # We display the list to the user
+    # Create a DISPLAY array with colors
+    local -a display_paths
+    for p in "${paths[@]}"; do
+        display_paths+=("${YEL}${p}${NC}")
+    done
+
     echo "Select a directory to cd into:"
-    select opt in "${paths[@]}"; do
+
+    # We run 'select' on the colored display array
+    select opt in "${display_paths[@]}"; do
         if [[ -n "$opt" ]]; then
-            cd "$opt" || return 1
-            break
+            # 'REPLY' is a built-in variable that holds the index number chosen
+            # We use that index to grab the clean path from our raw 'paths' array
+            local target_path="${paths[$REPLY]}"
+            
+            cd "$target_path" && break
         else
-            echo "Invalid selection."
+            echo "Invalid selection. Please choose a number from the list."
         fi
     done
 }
-
 # Quick Search
 ff() { /usr/bin/find . -name "$@" ; }
 alias markdown='mdv'
