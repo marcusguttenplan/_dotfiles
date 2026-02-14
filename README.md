@@ -36,6 +36,16 @@ ssh-add --apple-use-keychain ~/.ssh/id_ed25519
 pbcopy < ~/.ssh/id_ed25519.pub
 ```
 
+Set up touch ID for terminal
+```
+sed -i '.bak' '1s/^/auth       sufficient     pam_tid.so\'$'\n/g' todo.txt
+```
+
+Set touch ID to ignore a restriction caused by DisplayLink
+```
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.security.authorization.plist ignoreArd -bool TRUE
+```
+
 
 ### Dotfiles
 ```

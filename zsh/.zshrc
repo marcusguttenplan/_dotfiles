@@ -137,7 +137,7 @@ WHITE=$'\033[00;01m'
 NC=$'\033[00m'
 
 # Prompt-Specific Color Vars (Zsh Native)
-REDF="%B%F{red}"
+REDF="%B%F{203}"
 YELF="%B%F{yellow}"
 GREENF="%B%F{green}"
 BLUEF="%B%F{blue}"
