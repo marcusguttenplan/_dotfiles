@@ -74,5 +74,5 @@ brew install node nodenv rbenv ruby-build
 ```
 
 ```
-brew install qlstephen qlmarkdown betterzip
+brew install qlstephen qlmarkdown betterzip awscli
 ```
