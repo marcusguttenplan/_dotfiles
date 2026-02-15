@@ -16,7 +16,7 @@ eval "$(nodenv init -)"
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 # ZSH_THEME="robbyrussell"
-export TERM_THEME="green"
+export TERM_THEME="nord-gray"
 ZSH_THEME="local"
 
 # Set list of themes to pick from when loading at random
@@ -79,7 +79,7 @@ ZSH_THEME="local"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git dotenv colorize gcloud)
+plugins=(git dotenv colorize gcloud aws)
 
 ZSH_COLORIZE_TOOL=chroma
 ZSH_COLORIZE_CHROMA_FORMATTER=terminal256
@@ -127,7 +127,7 @@ HISTFILE=~/.zsh_history
 
 # Standard Color Vars (for scripts/echo)
 RED=$'\033[01;31m'
-YEL=$'\033[01;33m'
+YEL=$'\033[38;5;220m'
 GREEN=$'\033[01;32m'
 BLUE=$'\033[01;34m'
 PURP=$'\033[00;35m'
@@ -138,7 +138,7 @@ NC=$'\033[00m'
 
 # Prompt-Specific Color Vars (Zsh Native)
 REDF="%B%F{203}"
-YELF="%B%F{yellow}"
+YELF="%B%F{220}"
 GREENF="%B%F{green}"
 BLUEF="%B%F{blue}"
 PURPF="%F{magenta}"
@@ -177,7 +177,7 @@ updaterepos() {
     local CUR_DIR=$(pwd)
     print -P "\n%B%UPulling in latest changes for all repositories...%u%b\n"
     for i in $(find . -name ".git" | cut -c 3-); do
-        print -P "\n${YELF}+$i${NCF}"
+        print -P "\n${YEL}+$i${NCF}"
         cd "${i:h}" # Move to parent of .git
         git pull origin master
         cd "$CUR_DIR"
@@ -305,7 +305,7 @@ _get_raw_zsh_paths() {
 
 cdd() {
     # Local color definitions
-    local YEL=$'\e[1;33m'
+    local YEL=$'\033[38;5;220m'
     local NC=$'\e[0m'
 
     # Populate the RAW data array
@@ -363,7 +363,7 @@ ii() {
     print -P "\n${REDF}Machine stats:${NCF}"
     uptime
     print -P "\n${REDF}Current date:${NCF}"
-    echo -e "${YEL}$(date)${NC}"
+    echo -e "${YELF}$(date)${NC}"
     print -P "\n${REDF}Current Working Dirs:${NCF}"
     pwdz
     print -P "\n${REDF}IP Addresses:${NCF}"
