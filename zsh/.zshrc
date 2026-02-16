@@ -17,6 +17,7 @@ eval "$(nodenv init -)"
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 # ZSH_THEME="robbyrussell"
 export TERM_THEME="nord-gray"
+export OVERRIDE_TERM_THEME="nord-yellow"
 ZSH_THEME="local"
 
 # Set list of themes to pick from when loading at random
@@ -150,9 +151,6 @@ NCF="%b%f"
 export EDITOR=/usr/bin/nano
 export BLOCKSIZE=1k
 
-# ----------------------------------------------------------------------------
-# The "Architect" Prompt & Line Logic
-# ----------------------------------------------------------------------------
 # Lockdown Mode
 lockdown() {
   PROMPT='${GREENF}| %b%f%~ ${WHITEF}@host ${GREENF}(${NCF}${REDF}user${NCF}${GREENF}) 
@@ -234,6 +232,8 @@ alias flush="sudo killall -HUP mDNSResponder && dscacheutil -flushcache"
 # ----------------------------------------------------------------------------
 alias dockerstopall='docker stop $(docker ps -aq)'
 alias dockerrmall='docker rm $(docker ps -aq)'
+
+alias cat='ccat'
 
 function sslkeygen() {
     vared -p "Enter Name of Cert: " -c certname
@@ -363,7 +363,7 @@ ii() {
     print -P "\n${REDF}Machine stats:${NCF}"
     uptime
     print -P "\n${REDF}Current date:${NCF}"
-    echo -e "${YELF}$(date)${NC}"
+    echo -e "${YEL}$(date)${NC}"
     print -P "\n${REDF}Current Working Dirs:${NCF}"
     pwdz
     print -P "\n${REDF}IP Addresses:${NCF}"
