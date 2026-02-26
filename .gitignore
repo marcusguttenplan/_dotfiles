@@ -1,13 +1,23 @@
-.creds/
-.vscode
-node_modules
-*creds*
+# OS and Application
 .DS_Store
+.vscode
+
+# LLM tools
+.claude
+.ai
+
+# Language deps
+node_modules
 node_modules/
 __pycache_
 *.pyc
 *Env/
 *env/
+.venv
+
+# Sensitive info
+.creds/
+*creds*
 *creds.json
 credentials.csv
 credentials*
